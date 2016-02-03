@@ -55,18 +55,18 @@ public class Calculator {
 
 		// if文のように１行のみとなる場合は{}やreturnが省略できる。
 		// 加算
-		actionMap.put("add", Items -> Items.left.add(Items.right));
+		actionMap.put("add", items -> items.left.add(items.right));
 		// 減算
-		actionMap.put("sub", Items -> Items.left.subtract(Items.right));
+		actionMap.put("sub", items -> items.left.subtract(items.right));
 		// 積算
-		actionMap.put("mul", Items -> Items.left.multiply(Items.right));
+		actionMap.put("mul", items -> items.left.multiply(items.right));
 		// 除算
-		actionMap.put("div", Items -> Items.left.divide(Items.right));
+		actionMap.put("div", items -> items.left.divide(items.right));
 
 		// ラムダ式が複数行になる場合はreturnが必要。
-		//actionMap.put("add", (Items) -> {return Items.left.add(Items.right);});
+		//actionMap.put("add", (items) -> {return items.left.add(items.right);});
 		// ラムダ式のアロー演算子->の左辺が単項目の場合のみ、括弧が省略できる
-		//actionMap.put("add", Items -> Items.left.add(Items.right));
+		//actionMap.put("add", items -> items.left.add(items.right));
 
 		// 古の手法
 //		actionMap.put("add", new Function<Calculator.Items, BigDecimal>() {
