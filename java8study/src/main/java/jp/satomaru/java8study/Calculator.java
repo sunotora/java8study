@@ -61,9 +61,12 @@ public class Calculator {
 		// 減算
 		actionMap.put("sub", items -> items.left.subtract(items.right));
 		// 積算
-		actionMap.put("mul", items -> items.left.multiply(items.right));
+//		actionMap.put("mul", items -> items.left.multiply(items.right));
+		// メソッド参照（積算）
+		actionMap.put("mul", this::mul);
 		// 除算
-		actionMap.put("div", items -> items.left.divide(items.right));
+//		actionMap.put("div", items -> items.left.divide(items.right));
+		actionMap.put("div", this::div);
 
 		// ラムダ式が複数行になる場合はreturnが必要。
 		//actionMap.put("add", (items) -> {return items.left.add(items.right);});
@@ -77,6 +80,13 @@ public class Calculator {
 //				return t.left.add(t.right);
 //			}
 //		});
+	}
+
+	private BigDecimal mul(Items items) {
+		return items.left.multiply(items.right);
+	}
+	private BigDecimal div(Items items) {
+		return items.left.divide(items.right);
 	}
 
 	/**
