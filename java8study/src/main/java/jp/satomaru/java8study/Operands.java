@@ -23,4 +23,15 @@ public class Operands {
 	public BigDecimal executeRight(UnaryOperator<BigDecimal> action) {
 		return action.apply(right);
 	}
+
+	public static void main(String[] args) {
+		Operands me = new Operands(BigDecimal.valueOf(1), BigDecimal.valueOf(2));
+		// 足し算をさせてみてください。
+		System.out.println(me.execute(Operands::add));
+		// R apply(T t, U u);
+	}
+
+	private static BigDecimal add(BigDecimal left, BigDecimal right) {
+		return left.add(right);
+	}
 }
