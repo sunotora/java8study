@@ -53,13 +53,14 @@ public class Calculator {
 		// actionMapを初期化し、四則演算を行うFunctionを、演算子に関連付けて保存してください。
 		actionMap = new HashMap<>();
 
-		// TODO ラムダ式をメソッド参照に置き換える
 
 		// if文のように１行のみとなる場合は{}やreturnが省略できる。
 		// 加算
 		actionMap.put("add", items -> items.left.add(items.right));
 		// 減算
 		actionMap.put("sub", items -> items.left.subtract(items.right));
+
+		// ラムダ式をメソッド参照に置き換える
 		// 積算
 //		actionMap.put("mul", items -> items.left.multiply(items.right));
 		// メソッド参照（積算）
