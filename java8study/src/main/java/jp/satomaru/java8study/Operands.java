@@ -9,6 +9,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Operands {
 
+	public static void main(String[] args) {
+		Operands me = new Operands(BigDecimal.valueOf(1), BigDecimal.valueOf(2));
+		// TODO 足し算をさせてみてください。
+	}
+
 	private final BigDecimal left;
 	private final BigDecimal right;
 
