@@ -1,6 +1,10 @@
 package jp.satomaru.java8study;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,10 +37,10 @@ public final class Strings {
 	 * @return 文字列
 	 */
 	public static String repeat(char target, int count) {
-		// targetのストリームを生成
-		// ストリームからcount分取ってくる
-		// 文字列に変換
-		// 全文字列をくっつけて返却
+		// targetを延々と連ねるStream<Character>を生成
+		// 個数をcountに制限する
+		// 文字列に変換してStream<String>を生成
+		// 全要素をくっつける
 		return Stream.generate(() -> target)
 				.limit(count)
 				.map(String::valueOf)
@@ -50,7 +54,34 @@ public final class Strings {
 				.orElse(0);
 	}
 
-	// TODO "key:value"という書式の文字列で構成された配列からMapを作成しましょう。ただしnullはスキップします。
+	public static Map<String, String> createMap(List<String> keyValueList) {
+		// TODO "key:value"という書式の文字列で構成された配列からMapを作成しましょう。ただしnullはスキップします。
+		Map<String, String> stringMap = new HashMap<>();
+
+//		これだとnullが入ってきた時に落ちる
+//		keyValueList.forEach(x -> {
+//			String[] strs = x.split(":");
+//			map.put(strs[0], strs[1]);
+//		});
+
+		return stringMap;
+	}
+
+	public static void main(String args[]) {
+		List<String> keyValueList = new ArrayList<>();
+		keyValueList.add("key1:value1");
+		keyValueList.add("key2:value2");
+		keyValueList.add(null);
+		keyValueList.add("key3:value3");
+		keyValueList.add("key4:value4");
+		keyValueList.add(null);
+		keyValueList.add("key5:value5");
+		keyValueList.forEach(System.out::println);
+
+		// Key, Valueの表示
+		createMap(keyValueList).forEach((x, y) -> System.out.println(x + ":" + y));
+	}
+
 
 	private Strings() {}
 }
