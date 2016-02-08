@@ -56,7 +56,7 @@ public final class Strings {
 
 	public static Map<String, String> createMap(List<String> keyValueList) {
 		// TODO "key:value"という書式の文字列で構成された配列からMapを作成しましょう。ただしnullはスキップします。
-		Map<String, String> stringMap = new HashMap<>();
+		Map<String, String> tempMap = new HashMap<>();
 
 //		これだとnullが入ってきた時に落ちる
 //		keyValueList.forEach(x -> {
@@ -64,7 +64,13 @@ public final class Strings {
 //			map.put(strs[0], strs[1]);
 //		});
 
-		return stringMap;
+		keyValueList.stream()
+			.filter(x -> x != null)
+			.forEach(x -> {String[] strs = x.split(":");
+						tempMap.put(strs[0], strs[1]);}
+			);
+
+		return tempMap;
 	}
 
 	public static void main(String args[]) {
@@ -76,7 +82,7 @@ public final class Strings {
 		keyValueList.add("key4:value4");
 		keyValueList.add(null);
 		keyValueList.add("key5:value5");
-		keyValueList.forEach(System.out::println);
+//		keyValueList.forEach(System.out::println);
 
 		// Key, Valueの表示
 		createMap(keyValueList).forEach((x, y) -> System.out.println(x + ":" + y));
