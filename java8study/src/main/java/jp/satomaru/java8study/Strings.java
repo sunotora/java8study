@@ -1,6 +1,10 @@
 package jp.satomaru.java8study;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,11 +16,14 @@ public final class Strings {
 
 	/**
 	 * 数値に変換します。
-	 * 
+	 *
 	 * @param string 数値を表す文字列
 	 * @return 数値（文字列がnullの場合は0）
 	 */
 	public static BigDecimal toBigDecimal(String string) {
+		// nullを許可するOptional<String>を作る
+		// そのOptionalに対してnew BigDecimal(x)を適用 → 型はOptional<BigDecimal>となる
+		// Optionalの中身がnullでなければそれを、nullの場合は0を返却する
 		return Optional.ofNullable(string)
 				.map(BigDecimal::new)
 				.orElse(BigDecimal.ZERO);
@@ -24,21 +31,63 @@ public final class Strings {
 
 	/**
 	 * 文字を繰り返します。
-	 * 
+	 *
 	 * @param target 対象の文字
 	 * @param number 繰り返し回数
 	 * @return 文字列
 	 */
 	public static String repeat(char target, int count) {
+		// targetを延々と連ねるStream<Character>を生成
+		// 個数をcountに制限する
+		// 文字列に変換してStream<String>を生成
+		// 全要素をくっつける
 		return Stream.generate(() -> target)
 				.limit(count)
 				.map(String::valueOf)
 				.collect(Collectors.joining());
 	}
 
-	// TODO 文字数を数えるメソッドを実装しましょう。ただし、nullの時は0文字とします。
+	public static int count(String string) {
+		// 文字数を数えるメソッドを実装しましょう。ただし、nullの時は0文字とします。
+		return Optional.ofNullable(string)
+				.map(String::length)
+				.orElse(0);
+	}
 
-	// TODO "key:value"という書式の文字列で構成された配列からMapを作成しましょう。ただしnullはスキップします。
+	public static Map<String, String> createMap(List<String> keyValueList) {
+		// TODO "key:value"という書式の文字列で構成された配列からMapを作成しましょう。ただしnullはスキップします。
+		Map<String, String> tempMap = new HashMap<>();
+
+//		これだとnullが入ってきた時に落ちる
+//		keyValueList.forEach(x -> {
+//			String[] strs = x.split(":");
+//			map.put(strs[0], strs[1]);
+//		});
+
+		keyValueList.stream()
+			.filter(x -> x != null)
+			.forEach(x -> {String[] strs = x.split(":");
+						tempMap.put(strs[0], strs[1]);}
+			);
+
+		return tempMap;
+	}
+
+	public static void main(String args[]) {
+		List<String> keyValueList = new ArrayList<>();
+		keyValueList.add("key1:value1");
+		keyValueList.add("key2:value2");
+		keyValueList.add(null);
+		keyValueList.add("key3:value3");
+		keyValueList.add("key4:value4");
+		keyValueList.add(null);
+		keyValueList.add("key5:value5");
+//		keyValueList.forEach(System.out::println);
+
+		// Key, Valueの表示
+		createMap(keyValueList).forEach((x, y) -> System.out.println(x + ":" + y));
+	}
+
 
 	private Strings() {}
 }
