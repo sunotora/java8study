@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,21 +57,27 @@ public final class Strings {
 
 	public static Map<String, String> createMap(List<String> keyValueList) {
 		// TODO "key:value"という書式の文字列で構成された配列からMapを作成しましょう。ただしnullはスキップします。
-		Map<String, String> tempMap = new HashMap<>();
-
+//		Map<String, String> tempMap = new HashMap<>();
+//
 //		これだとnullが入ってきた時に落ちる
 //		keyValueList.forEach(x -> {
 //			String[] strs = x.split(":");
 //			map.put(strs[0], strs[1]);
 //		});
+//
+//		keyValueList.stream()
+//			.filter(x -> x != null)
+//			.forEach(x -> {String[] strs = x.split(":");
+//						tempMap.put(strs[0], strs[1]);}
+//			);
+//
+//		return tempMap;
 
-		keyValueList.stream()
-			.filter(x -> x != null)
-			.forEach(x -> {String[] strs = x.split(":");
-						tempMap.put(strs[0], strs[1]);}
-			);
-
-		return tempMap;
+		return keyValueList.stream()                                            // ListからStreamを生成。
+				.filter(Objects::nonNull)                                       // null以外の要素のみ対象とする。
+				.map(string -> string.split(":", 2))                            // コロンで2分割して、配列に変換する。
+				.filter(pair -> pair.length == 2)                               // 2分割できたもののみ対象とする。
+				.collect(Collectors.toMap(pair -> pair[0], pair -> pair[1]));   // 配列の1つ目をキー、2つ目を値として、Mapに集計する。
 	}
 
 	public static void main(String args[]) {
