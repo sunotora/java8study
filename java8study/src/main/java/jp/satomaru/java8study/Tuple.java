@@ -48,16 +48,6 @@ public final class Tuple<F, S> {
 	private final S second;
 
 	/**
-	 * 変換します。
-	 * 
-	 * @param action このタプルを変換する関数
-	 * @return 変換後の値
-	 */
-	public <T> T map(BiFunction<F, S, T> action) {
-		return action.apply(first, second);
-	}
-
-	/**
 	 * 新しいタプルを生成します。
 	 * 
 	 * @param forFirst 一つ目の値を変換する関数
@@ -71,21 +61,31 @@ public final class Tuple<F, S> {
 	/**
 	 * 一つ目の値のみ変換して、新しいタプルを生成します。
 	 * 
-	 * @param action 一つ目の値を変換する関数
+	 * @param forFirst 一つ目の値を変換する関数
 	 * @return 新しいタプル
 	 */
-	public <T> Tuple<T, S> map1st(Function<F, T> action) {
-		return Tuple.of(action.apply(first), second);
+	public <T> Tuple<T, S> map1st(Function<F, T> forFirst) {
+		return Tuple.of(forFirst.apply(first), second);
 	}
 
 	/**
 	 * 二つ目の値のみ変換して、新しいタプルを生成します。
 	 * 
-	 * @param action 二つ目の値を変換する関数
+	 * @param forSecond 二つ目の値を変換する関数
 	 * @return 新しいタプル
 	 */
-	public <T> Tuple<F, T> map2nd(Function<S, T> action) {
-		return Tuple.of(first, action.apply(second));
+	public <T> Tuple<F, T> map2nd(Function<S, T> forSecond) {
+		return Tuple.of(first, forSecond.apply(second));
+	}
+
+	/**
+	 * 集計します。
+	 * 
+	 * @param collector このタプルを集計する関数
+	 * @return 集計後の値
+	 */
+	public <T> T collect(BiFunction<F, S, T> collector) {
+		return collector.apply(first, second);
 	}
 
 	/**

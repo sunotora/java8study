@@ -31,7 +31,7 @@ public final class Utils {
 	 * 文字を繰り返します。
 	 *
 	 * @param target 文字
-	 * @param number 繰り返し回数
+	 * @param count 繰り返し回数
 	 * @return 文字列
 	 */
 	public static String repeat(char target, int count) {
@@ -59,8 +59,8 @@ public final class Utils {
 	 * @param list 文字列リスト
 	 * @return マップ（書式が妥当でないものは含まない）
 	 */
-	public static Map<String, String> toMap(List<String> keyValueList) {
-		return keyValueList.stream()                                            // ListからStreamを生成。
+	public static Map<String, String> toMap(List<String> list) {
+		return list.stream()                                                    // ListからStreamを生成。
 				.filter(Objects::nonNull)                                       // null以外の要素のみ対象とする。
 				.map(string -> string.split(":", 2))                            // コロンで2分割して、配列に変換する。
 				.filter(pair -> pair.length == 2)                               // 2分割できたもののみ対象とする。
