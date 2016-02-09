@@ -7,14 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class StringsTest {
 
-	@Test
-	public void testCreateMap() {
+	private static List<String> keyValueList;
+	private static Map<String, String> map;
 
-		List<String> keyValueList = new ArrayList<>();
+	@BeforeClass
+	public static void beforeClass() {
+		keyValueList = new ArrayList<>();
 		keyValueList.add("key1:value1");
 		keyValueList.add("key2:value2");
 		keyValueList.add(null);
@@ -22,6 +25,12 @@ public class StringsTest {
 		keyValueList.add("key4:value4");
 		keyValueList.add(null);
 		keyValueList.add("key5:value5");
+
+		map = Strings.createMap(keyValueList);
+	}
+
+	@Test
+	public void testCreateMap() {
 
 		Map<String, String> actualMap = Strings.createMap(keyValueList);
 
@@ -32,4 +41,12 @@ public class StringsTest {
 		assertThat(actualMap, hasEntry("key5", "value5"));
 	}
 
+	@Test
+	public void testmapToStringList() throws Exception {
+		List<String> actualList = Strings.mapToStringList(map);
+
+		String[] expected = {"key1:value1", "key2:value2","key3:value3","key4:value4","key5:value5"};
+
+		assertThat(actualList, is(containsInAnyOrder(expected)));
+	}
 }

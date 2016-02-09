@@ -78,5 +78,16 @@ public final class Strings {
 				.collect(Collectors.toMap(pair -> pair[0], pair -> pair[1]));   // 配列の1つ目をキー、2つ目を値として、Mapに集計する。
 	}
 
+	public static <T, R> List<String> mapToStringList(Map <T, R> targetMap) {
+		// Map<?,?>から"key:value"という文字列のリストを生成してみてください。
+
+		// map → entrySet
+		// entrySet → String文字列
+		// String文字列をListに集計する
+		return targetMap.entrySet().stream()
+				.map(x -> String.valueOf(x.getKey()) + ":" + String.valueOf(x.getValue()))
+				.collect(Collectors.toList());
+	}
+
 	private Strings() {}
 }
