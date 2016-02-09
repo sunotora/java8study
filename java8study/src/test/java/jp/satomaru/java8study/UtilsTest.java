@@ -11,7 +11,7 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class StringsTest {
+public class UtilsTest {
 
 	private static List<String> keyValueList;
 	private static Map<String, String> map;
@@ -40,9 +40,9 @@ public class StringsTest {
 	}
 
 	@Test
-	public void testCreateMap() {
+	public void testToMap() {
 
-		Map<String, String> actualMap = Strings.createMap(keyValueList);
+		Map<String, String> actualMap = Utils.toMap(keyValueList);
 
 		assertThat(actualMap, hasEntry("key1", "value1"));
 		assertThat(actualMap, hasEntry("key2", "value2"));
@@ -52,9 +52,9 @@ public class StringsTest {
 	}
 
 	@Test
-	public void testMapToStringList() throws Exception {
+	public void testToStringList() throws Exception {
 
-		List<String> actualList = Strings.mapToStringList(map);
+		List<String> actualList = Utils.toStringList(map);
 
 		String[] expected = {"key1:value1", "key2:value2","key3:value3","key4:value4","key5:value5", "key6:"};
 
