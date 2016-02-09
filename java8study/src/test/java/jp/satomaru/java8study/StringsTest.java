@@ -17,7 +17,7 @@ public class StringsTest {
 	private static Map<String, String> map;
 
 	@BeforeClass
-	public static void beforeClass() {
+	public static void createKeyValueList() {
 		keyValueList = new ArrayList<>();
 		keyValueList.add("key1:value1");
 		keyValueList.add("key2:value2");
@@ -26,7 +26,10 @@ public class StringsTest {
 		keyValueList.add("key4:value4");
 		keyValueList.add(null);
 		keyValueList.add("key5:value5");
+	}
 
+	@BeforeClass
+	public static void createMap() {
 		map = new HashMap<>();
 		map.put("key1", "value1");
 		map.put("key2", "value2");
@@ -50,6 +53,7 @@ public class StringsTest {
 
 	@Test
 	public void testMapToStringList() throws Exception {
+
 		List<String> actualList = Strings.mapToStringList(map);
 
 		String[] expected = {"key1:value1", "key2:value2","key3:value3","key4:value4","key5:value5", "key6:"};
