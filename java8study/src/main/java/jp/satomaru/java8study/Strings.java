@@ -1,8 +1,6 @@
 package jp.satomaru.java8study;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,7 +54,7 @@ public final class Strings {
 	}
 
 	public static Map<String, String> createMap(List<String> keyValueList) {
-		// TODO "key:value"という書式の文字列で構成された配列からMapを作成しましょう。ただしnullはスキップします。
+		// "key:value"という書式の文字列で構成された配列からMapを作成しましょう。ただしnullはスキップします。
 //		Map<String, String> tempMap = new HashMap<>();
 //
 //		これだとnullが入ってきた時に落ちる
@@ -79,22 +77,6 @@ public final class Strings {
 				.filter(pair -> pair.length == 2)                               // 2分割できたもののみ対象とする。
 				.collect(Collectors.toMap(pair -> pair[0], pair -> pair[1]));   // 配列の1つ目をキー、2つ目を値として、Mapに集計する。
 	}
-
-	public static void main(String args[]) {
-		List<String> keyValueList = new ArrayList<>();
-		keyValueList.add("key1:value1");
-		keyValueList.add("key2:value2");
-		keyValueList.add(null);
-		keyValueList.add("key3:value3");
-		keyValueList.add("key4:value4");
-		keyValueList.add(null);
-		keyValueList.add("key5:value5");
-//		keyValueList.forEach(System.out::println);
-
-		// Key, Valueの表示
-		createMap(keyValueList).forEach((x, y) -> System.out.println(x + ":" + y));
-	}
-
 
 	private Strings() {}
 }
