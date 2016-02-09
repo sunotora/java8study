@@ -80,12 +80,13 @@ public final class Strings {
 
 	public static <T, R> List<String> mapToStringList(Map <T, R> targetMap) {
 		// Map<?,?>から"key:value"という文字列のリストを生成してみてください。
+		// valueがnullの時は、ブランク、つまり、“key:”となるようにしてみてください。
 
 		// map → entrySet
 		// entrySet → String文字列
 		// String文字列をListに集計する
 		return targetMap.entrySet().stream()
-				.map(x -> String.valueOf(x.getKey()) + ":" + String.valueOf(x.getValue()))
+				.map(entry -> String.format("%s:%s", entry.getKey(), Objects.isNull(entry.getValue()) ? "" : entry.getValue()))
 				.collect(Collectors.toList());
 	}
 

@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,13 @@ public class StringsTest {
 		keyValueList.add(null);
 		keyValueList.add("key5:value5");
 
-		map = Strings.createMap(keyValueList);
+		map = new HashMap<>();
+		map.put("key1", "value1");
+		map.put("key2", "value2");
+		map.put("key3", "value3");
+		map.put("key4", "value4");
+		map.put("key5", "value5");
+		map.put("key6", null);
 	}
 
 	@Test
@@ -45,7 +52,7 @@ public class StringsTest {
 	public void testMapToStringList() throws Exception {
 		List<String> actualList = Strings.mapToStringList(map);
 
-		String[] expected = {"key1:value1", "key2:value2","key3:value3","key4:value4","key5:value5"};
+		String[] expected = {"key1:value1", "key2:value2","key3:value3","key4:value4","key5:value5", "key6:"};
 
 		assertThat(actualList, is(containsInAnyOrder(expected)));
 	}
