@@ -79,13 +79,13 @@ public final class Tuple<F, S> {
 	}
 
 	/**
-	 * 集計します。
+	 * 処理を行います。
 	 * 
-	 * @param collector このタプルを集計する関数
-	 * @return 集計後の値
+	 * @param action このタプルを処理する関数
+	 * @return 処理結果
 	 */
-	public <T> T collect(BiFunction<F, S, T> collector) {
-		return collector.apply(first, second);
+	public <T> T apply(BiFunction<F, S, T> action) {
+		return action.apply(first, second);
 	}
 
 	/**
