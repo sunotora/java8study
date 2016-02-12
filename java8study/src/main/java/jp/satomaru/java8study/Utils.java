@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 文字列ユーティリティ。
+ * ユーティリティ。
  */
 public final class Utils {
 
@@ -88,17 +88,21 @@ public final class Utils {
 	 * @return 型ごとに集めた結果を格納したマップ
 	 */
 	public static Map<Class<?>, List<Object>> groupByType(Collection<?> collection) {
-		return collection.stream()                                              // collectionをストリーム化
-				.filter(Objects::nonNull)                                       // nullでない要素のみにフィルター
-				.collect(
-					Collectors.groupingBy(
-						obj -> obj.getClass(),
-						Collectors.mapping(
-								obj -> obj,
-								Collectors.toList()
-						)
-					)
-				);
+		return collection.stream()                                      // collectionをストリーム化
+				.filter(Objects::nonNull)                               // nullでない要素のみにフィルター
+				.collect(Collectors.groupingBy(Object::getClass));      // クラスをキーにして要素をグルーピング
+
+//		return collection.stream()
+//				.filter(Objects::nonNull)
+//				.collect(
+//					Collectors.groupingBy(
+//						obj -> obj.getClass(),
+//						Collectors.mapping(
+//								obj -> obj,
+//								Collectors.toList()
+//						)
+//					)
+//				);
 		// 参考サイト：http://qiita.com/komiya_atsushi/items/8daac1b90d73b958c725
 	}
 
