@@ -1,6 +1,8 @@
 package jp.satomaru.java8study;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +116,18 @@ public final class Utils {
 	 */
 	public static String defaultString(Object object) {
 		return (object != null) ? String.valueOf(object) : "";
+	}
+
+	/**
+	 * 指定された日と曜日の組み合わせのうち、最も今日に近い過去日を検索します。
+	 * 
+	 * @param dayOfMonth 日
+	 * @param dayOfWeek 曜日
+	 * @return 検索された日
+	 */
+	public static LocalDate lookForRecentDayOf(int dayOfMonth, DayOfWeek dayOfWeek) {
+		// TODO 実装してください。
+		return null;
 	}
 
 	private Utils() {}
