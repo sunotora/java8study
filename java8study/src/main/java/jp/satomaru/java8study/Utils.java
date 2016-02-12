@@ -43,7 +43,7 @@ public final class Utils {
 
 	/**
 	 * 文字数を数えます。
-	 * 
+	 *
 	 * @param string 文字列
 	 * @return 文字数（nullの場合は0）
 	 */
@@ -55,7 +55,7 @@ public final class Utils {
 
 	/**
 	 * "key:value"という書式の文字列リストから、マップを生成します。
-	 * 
+	 *
 	 * @param list 文字列リスト
 	 * @return マップ（書式が妥当でないものは含まない）
 	 */
@@ -69,32 +69,42 @@ public final class Utils {
 
 	/**
 	 * マップから、"key:value"という書式の文字列リストを生成します。
-	 * 
+	 *
 	 * @param map マップ
 	 * @return 各エントリーを"key:value"に編集したリスト
 	 */
 	public static <K, V> List<String> toStringList(Map<K, V> map) {
-		return map.entrySet().stream()
-				.map(Tuple::of)
-				.map(tuple -> tuple.map2nd(Utils::defaultString))
-				.map(tuple -> tuple.format("%s:%s"))
-				.collect(Collectors.toList());
+		return map.entrySet().stream()                                          // mapからEntryを取得しストリーム化
+				.map(Tuple::of)                                                 // EntryをTuple<Key, Value>に
+				.map(tuple -> tuple.map2nd(Utils::defaultString))               // Tupleの２要素目がnullだったら空文字に変更
+				.map(tuple -> tuple.format("%s:%s"))                            // Tupleの第一要素 + ":" + 第二要素の文字列に変換
+				.collect(Collectors.toList());                                  // 文字列を集計してリストに
 	}
 
 	/**
 	 * コレクション内のオブジェクトを、型ごとに集めます。
-	 * 
+	 *
 	 * @param collection コレクション
 	 * @return 型ごとに集めた結果を格納したマップ
 	 */
 	public static Map<Class<?>, List<Object>> groupByType(Collection<?> collection) {
-		// TODO 実装してください。
-		return null;
+		return collection.stream()                                              // collectionをストリーム化
+				.filter(Objects::nonNull)                                       // nullでない要素のみにフィルター
+				.collect(
+					Collectors.groupingBy(
+						obj -> obj.getClass(),
+						Collectors.mapping(
+								obj -> obj,
+								Collectors.toList()
+						)
+					)
+				);
+		// 参考サイト：http://qiita.com/komiya_atsushi/items/8daac1b90d73b958c725
 	}
 
 	/**
 	 * 文字列に変換します。
-	 * 
+	 *
 	 * @param object 対象
 	 * @return 文字列（nullの場合はブランク文字列）
 	 */
