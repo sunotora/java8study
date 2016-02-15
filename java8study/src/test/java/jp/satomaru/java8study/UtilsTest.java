@@ -101,10 +101,18 @@ public class UtilsTest {
 	@Test
 	public void testLookForRecentDayOf() throws Exception {
 
-		assertThat(Utils.lookForRecentDayOf(15, DayOfWeek.MONDAY), is(LocalDate.of(2016, 2, 15)));
-		assertThat(Utils.lookForRecentDayOf(16, DayOfWeek.TUESDAY), is(LocalDate.of(2015, 6, 16)));
-		assertThat(Utils.lookForRecentDayOf(13, DayOfWeek.WEDNESDAY), is(LocalDate.of(2016, 1, 13)));
+		assertThat(Utils.lookForRecentDayOf(15, DayOfWeek.MONDAY),    is(LocalDate.of(2016,  2, 15)));
+		assertThat(Utils.lookForRecentDayOf(16, DayOfWeek.TUESDAY),   is(LocalDate.of(2015,  6, 16)));
+		assertThat(Utils.lookForRecentDayOf(13, DayOfWeek.WEDNESDAY), is(LocalDate.of(2016,  1, 13)));
+		assertThat(Utils.lookForRecentDayOf(24, DayOfWeek.WEDNESDAY), is(LocalDate.of(2015,  6, 24)));
+		assertThat(Utils.lookForRecentDayOf(31, DayOfWeek.WEDNESDAY), is(LocalDate.of(2014, 12, 31)));
 
+//		テストケース確認用
+//		for (int i = 1 ; i < 32 ; i++) {
+//			for (DayOfWeek week : DayOfWeek.values()) {
+//				System.out.println(Utils.lookForRecentDayOf(i, week) + " : " + week);
+//			}
+//		}
 	}
 }
 
