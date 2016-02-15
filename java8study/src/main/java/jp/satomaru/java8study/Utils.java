@@ -3,13 +3,11 @@ package jp.satomaru.java8study;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -115,37 +113,44 @@ public final class Utils {
 	 * @return 検索された日
 	 */
 	public static LocalDate lookForRecentDayOf(int dayOfMonth, DayOfWeek dayOfWeek) {
-		// TODO 実装してください。
-
 		LocalDate now = LocalDate.now();
-		return Stream.iterate(now.withDayOfMonth(1), date -> date.minusMonths(1))    // 本日の年月初日から、一月ずつ遡っていくストリームを生成する
-			.filter(date -> checkLastDate(date, dayOfMonth))                         // 末日が引数日より小さい月をフィルター
-			.filter(Predicate.isEqual(dayOfWeek))                                    // 曜日が同じものをフィルター
-			.filter(date -> checkPastDate(date, dayOfMonth))                         // 該当日が過去日でないか
-			.findFirst()                                                             // 最初の１件を探索し返却
-			.get();
+
+//		return Stream.iterate(now.withDayOfMonth(1), date -> date.minusMonths(1))    // 本日の年月初日から、一月ずつ遡っていくストリームを生成する
+//			.filter(date -> checkLastDate(date, dayOfMonth))                         // 末日が引数日より小さい月をフィルター
+//			.filter(Predicate.isEqual(dayOfWeek))                                    // 曜日が同じものをフィルター
+//			.filter(date -> checkPastDate(date, dayOfMonth))                         // 該当日が過去日でないか
+//			.findFirst()                                                             // 最初の１件を探索し返却
+//			.get();
+
+		return Stream.iterate(now.withDayOfMonth(1), date -> date.minusMonths(1))
+				.filter(date -> date.lengthOfMonth() >= dayOfMonth)
+				.map(date -> date.withDayOfMonth(dayOfMonth))
+				.filter(date -> date.getDayOfWeek().equals(dayOfWeek))
+				.filter(date -> date.isBefore(now))
+				.findFirst()
+				.get();
 	}
 
-	/**
-	 * 該当月末日がdayOfMonthより小さいかをチェックします。
-	 * @param date 日付
-	 * @param dayOfMonth
-	 * @return
-	 */
-	private static boolean checkLastDate(LocalDate date, int dayOfMonth) {
-		YearMonth ym = YearMonth.from(date);
-		LocalDate lastDate = ym.atEndOfMonth();
-		return lastDate.getDayOfMonth() > dayOfMonth;
-	};
-
-	/**
-	 * 該当日が過去日かどうかをチェックします。
-	 * @param date
-	 * @return
-	 */
-	private static boolean checkPastDate(LocalDate date, int dayOfMonth) {
-		return date.withDayOfMonth(dayOfMonth).isBefore(LocalDate.now());
-	}
+//	/**
+//	 * 該当月末日がdayOfMonthより小さいかをチェックします。
+//	 * @param date 日付
+//	 * @param dayOfMonth
+//	 * @return
+//	 */
+//	private static boolean checkLastDate(LocalDate date, int dayOfMonth) {
+//		YearMonth ym = YearMonth.from(date);
+//		LocalDate lastDate = ym.atEndOfMonth();
+//		return lastDate.getDayOfMonth() > dayOfMonth;
+//	};
+//
+//	/**
+//	 * 該当日が過去日かどうかをチェックします。
+//	 * @param date
+//	 * @return
+//	 */
+//	private static boolean checkPastDate(LocalDate date, int dayOfMonth) {
+//		return date.withDayOfMonth(dayOfMonth).isBefore(LocalDate.now());
+//	}
 
 	private Utils() {}
 }
