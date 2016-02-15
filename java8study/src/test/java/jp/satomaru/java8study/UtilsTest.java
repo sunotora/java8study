@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,4 +97,14 @@ public class UtilsTest {
 		Object[] expected3 = {Long.valueOf(1000)};
 		assertThat(actualList3, is(containsInAnyOrder(expected3)));
 	}
+
+	@Test
+	public void testLookForRecentDayOf() throws Exception {
+
+		assertThat(Utils.lookForRecentDayOf(15, DayOfWeek.MONDAY), is(LocalDate.of(2016, 2, 15)));
+		assertThat(Utils.lookForRecentDayOf(16, DayOfWeek.TUESDAY), is(LocalDate.of(2015, 6, 16)));
+		assertThat(Utils.lookForRecentDayOf(13, DayOfWeek.WEDNESDAY), is(LocalDate.of(2016, 1, 13)));
+
+	}
 }
+
