@@ -1,6 +1,9 @@
 package jp.satomaru.java8study;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -8,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -131,29 +136,42 @@ public final class Utils {
 				.get();
 	}
 
-//	/**
-//	 * 該当月末日がdayOfMonthより小さいかをチェックします。
-//	 * @param date 日付
-//	 * @param dayOfMonth
-//	 * @return
-//	 */
-//	private static boolean checkLastDate(LocalDate date, int dayOfMonth) {
-//		YearMonth ym = YearMonth.from(date);
-//		LocalDate lastDate = ym.atEndOfMonth();
-//		return lastDate.getDayOfMonth() > dayOfMonth;
-//	};
-//
-//	/**
-//	 * 該当日の曜日・過去日チェックします。
-//	 * @param date
-//	 * @return
-//	 */
-//	private static boolean check(LocalDate date, int dayOfMonth, DayOfWeek dayOfWeek) {
-//		LocalDate targetDate = date.withDayOfMonth(dayOfMonth);
-//
-//		return date.withDayOfMonth(dayOfMonth).isBefore(LocalDate.now())
-//				&& targetDate.getDayOfWeek().equals(dayOfWeek);
-//	}
+	/**
+	 * クラスパスに存在するJARから、指定されたパッケージ配下にある全クラスを検索します。
+	 * 
+	 * <p>
+	 * サブパッケージも全て検索します。
+	 * なお、ブートストラップ・クラスローダーが読み込んでいるクラスは検索できないことに注意してください。
+	 * </p>
+	 * 
+	 * @param packageName パッケージ名
+	 * @return 検索されたクラスのセット
+	 * @throws IOException JARファイルの読み込みに失敗した場合
+	 */
+	public static Set<Class<?>> searchClassInJar(String packageName) throws IOException {
+		String resourceName = packageName.replace('.', '/') + "/";
+		URL jarUrl = Thread.currentThread().getContextClassLoader().getResource(resourceName);
+		JarURLConnection connection = (JarURLConnection) jarUrl.openConnection();
+
+		try (JarFile jar = connection.getJarFile()) {
+			return jar.stream()
+					// TODO 実装してください。
+		}
+	}
+
+	/**
+	 * クラスを読み込みます。
+	 * 
+	 * @param fqcn 完全修飾クラス名（バイナリー名）
+	 * @return クラス
+	 */
+	public static Class<?> loadClass(String fqcn) {
+		try {
+			return Thread.currentThread().getContextClassLoader().loadClass(fqcn);
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
 
 	private Utils() {}
 }
