@@ -113,21 +113,21 @@ public final class Utils {
 	 * @return 検索された日
 	 */
 	public static LocalDate lookForRecentDayOf(int dayOfMonth, DayOfWeek dayOfWeek) {
+
 		LocalDate now = LocalDate.now();
 
 //		return Stream.iterate(now.withDayOfMonth(1), date -> date.minusMonths(1))    // 本日の年月初日から、一月ずつ遡っていくストリームを生成する
 //			.filter(date -> checkLastDate(date, dayOfMonth))                         // 末日が引数日より小さい月をフィルター
-//			.filter(Predicate.isEqual(dayOfWeek))                                    // 曜日が同じものをフィルター
-//			.filter(date -> checkPastDate(date, dayOfMonth))                         // 該当日が過去日でないか
+//			.filter(date -> check(date, dayOfMonth, dayOfWeek))                      // 該当日の曜日・過去日でないかをチェック
 //			.findFirst()                                                             // 最初の１件を探索し返却
 //			.get();
 
-		return Stream.iterate(now.withDayOfMonth(1), date -> date.minusMonths(1))
-				.filter(date -> date.lengthOfMonth() >= dayOfMonth)
-				.map(date -> date.withDayOfMonth(dayOfMonth))
-				.filter(date -> date.getDayOfWeek().equals(dayOfWeek))
-				.filter(date -> date.isBefore(now))
-				.findFirst()
+		return Stream.iterate(now.withDayOfMonth(1), date -> date.minusMonths(1))    // 本日の年月初日から、一月ずつ遡っていくストリームを生成する
+				.filter(date -> date.lengthOfMonth() >= dayOfMonth)                  // 月末日が対象引数日以上の月を選択
+				.map(date -> date.withDayOfMonth(dayOfMonth))                        // 年月初日から引数日にマップ
+				.filter(date -> date.getDayOfWeek().equals(dayOfWeek))               // 引数曜日と同じ日を選択
+				.filter(date -> date.isBefore(now))                                  // 過去日を選択
+				.findFirst()                                                         // 最初を選択し返却
 				.get();
 	}
 
@@ -144,12 +144,15 @@ public final class Utils {
 //	};
 //
 //	/**
-//	 * 該当日が過去日かどうかをチェックします。
+//	 * 該当日の曜日・過去日チェックします。
 //	 * @param date
 //	 * @return
 //	 */
-//	private static boolean checkPastDate(LocalDate date, int dayOfMonth) {
-//		return date.withDayOfMonth(dayOfMonth).isBefore(LocalDate.now());
+//	private static boolean check(LocalDate date, int dayOfMonth, DayOfWeek dayOfWeek) {
+//		LocalDate targetDate = date.withDayOfMonth(dayOfMonth);
+//
+//		return date.withDayOfMonth(dayOfMonth).isBefore(LocalDate.now())
+//				&& targetDate.getDayOfWeek().equals(dayOfWeek);
 //	}
 
 	private Utils() {}
