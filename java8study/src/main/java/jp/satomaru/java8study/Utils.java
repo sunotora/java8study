@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -138,12 +140,12 @@ public final class Utils {
 
 	/**
 	 * クラスパスに存在するJARから、指定されたパッケージ配下にある全クラスを検索します。
-	 * 
+	 *
 	 * <p>
 	 * サブパッケージも全て検索します。
 	 * なお、ブートストラップ・クラスローダーが読み込んでいるクラスは検索できないことに注意してください。
 	 * </p>
-	 * 
+	 *
 	 * @param packageName パッケージ名
 	 * @return 検索されたクラスのセット
 	 * @throws IOException JARファイルの読み込みに失敗した場合
@@ -155,13 +157,20 @@ public final class Utils {
 
 		try (JarFile jar = connection.getJarFile()) {
 			return jar.stream()
-					// TODO 実装してください。
+					.filter(not(JarEntry::isDirectory))   // ディレクトリの場合を除く
+					.map(JarEntry::getName)               // 名前に変更
+					.map(Utils::loadClass)                // クラスに変更
+					.collect(Collectors.toSet());         // Setに集計
 		}
+	}
+
+	public static <T> Predicate<T> not(Predicate<T> t) {
+		return t.negate();
 	}
 
 	/**
 	 * クラスを読み込みます。
-	 * 
+	 *
 	 * @param fqcn 完全修飾クラス名（バイナリー名）
 	 * @return クラス
 	 */
