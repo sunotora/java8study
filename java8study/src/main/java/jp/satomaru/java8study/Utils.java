@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -140,7 +141,6 @@ public final class Utils {
 	 * 
 	 * <p>
 	 * サブパッケージも全て検索します。
-	 * なお、ブートストラップ・クラスローダーが読み込んでいるクラスは検索できないことに注意してください。
 	 * </p>
 	 * 
 	 * @param file JARファイル
@@ -150,15 +150,23 @@ public final class Utils {
 	 */
 	public static Set<String> searchClassInJar(File file, String packageName) throws IOException {
 		try (JarFile jar = new JarFile(file)) {
+			/* 
+			 * TODO 実装してください。
+			 * なお、「クラスの完全修飾名」とは、以下を全て満たすものです。
+			 * 1. 拡張子が".class"である。
+			 * 2. "package-info.class"ではない。
+			 * 動作確認は、searchClassInJar(new File("【mavenリポジトリ】", "lombok-1.16.6.jar"), "lombok")でやってみてください。 
+			 */
 			return jar.stream()
-					/* 
-					 * TODO 実装してください。
-					 * なお、「クラスの完全修飾名」とは、以下を全て満たすものです。
-					 * 1. 拡張子が".class"である。
-					 * 2. "package-info.class"ではない。
-					 * 疎通確認は、searchClassInJar(new File("【mavenリポジトリ】", "lombok-1.16.6.jar"), "lombok")でやってみてください。 
-					 */
+//					.filter(not(JarEntry::isDirectory))   // ディレクトリの場合を除く
+//					.map(JarEntry::getName)               // 名前に変更
+//					.map(Utils::loadClass)                // クラスに変更
+//					.collect(Collectors.toSet());         // Setに集計
 		}
+	}
+
+	public static <T> Predicate<T> not(Predicate<T> t) {
+		return t.negate();
 	}
 
 	private Utils() {}
