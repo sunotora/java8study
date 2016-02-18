@@ -1,9 +1,8 @@
 package jp.satomaru.java8study;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.JarURLConnection;
-import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -137,39 +136,28 @@ public final class Utils {
 	}
 
 	/**
-	 * クラスパスに存在するJARから、指定されたパッケージ配下にある全クラスを検索します。
+	 * JARファイルから、指定されたパッケージ配下にある全クラスを検索します。
 	 * 
 	 * <p>
 	 * サブパッケージも全て検索します。
 	 * なお、ブートストラップ・クラスローダーが読み込んでいるクラスは検索できないことに注意してください。
 	 * </p>
 	 * 
+	 * @param file JARファイル
 	 * @param packageName パッケージ名
-	 * @return 検索されたクラスのセット
+	 * @return 検索されたクラスの完全修飾名（バイナリー名）のセット
 	 * @throws IOException JARファイルの読み込みに失敗した場合
 	 */
-	public static Set<Class<?>> searchClassInJar(String packageName) throws IOException {
-		String resourceName = packageName.replace('.', '/') + "/";
-		URL jarUrl = Thread.currentThread().getContextClassLoader().getResource(resourceName);
-		JarURLConnection connection = (JarURLConnection) jarUrl.openConnection();
-
-		try (JarFile jar = connection.getJarFile()) {
+	public static Set<String> searchClassInJar(File file, String packageName) throws IOException {
+		try (JarFile jar = new JarFile(file)) {
 			return jar.stream()
-					// TODO 実装してください。
-		}
-	}
-
-	/**
-	 * クラスを読み込みます。
-	 * 
-	 * @param fqcn 完全修飾クラス名（バイナリー名）
-	 * @return クラス
-	 */
-	public static Class<?> loadClass(String fqcn) {
-		try {
-			return Thread.currentThread().getContextClassLoader().loadClass(fqcn);
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
+					/* 
+					 * TODO 実装してください。
+					 * なお、「クラスの完全修飾名」とは、以下を全て満たすものです。
+					 * 1. 拡張子が".class"である。
+					 * 2. "package-info.class"ではない。
+					 * 疎通確認は、searchClassInJar(new File("【mavenリポジトリ】", "lombok-1.16.6.jar"), "lombok")でやってみてください。 
+					 */
 		}
 	}
 
