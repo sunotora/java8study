@@ -3,13 +3,16 @@ package jp.satomaru.java8study;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,6 +22,7 @@ public class UtilsTest {
 	private static List<String> keyValueList;
 	private static Map<String, String> map;
 	private static List<Object> multiObjectList;
+	private static Set<String> classSet;
 
 	@BeforeClass
 	public static void createKeyValueList() {
@@ -57,6 +61,14 @@ public class UtilsTest {
 		multiObjectList.add("str2");
 	}
 
+	@BeforeClass
+	public static void createClassSet() {
+		classSet = new HashSet<>();
+		classSet.add("lombok/Value.class");
+		classSet.add("lombok/NonNull.class");
+		classSet.add("lombok/Getter.class");
+		classSet.add("lombok/Lombok.class");
+	}
 
 	@Test
 	public void testToMap() {
@@ -114,5 +126,21 @@ public class UtilsTest {
 //			}
 //		}
 	}
+
+	@Test
+	public void testSearchClassInJar() throws Exception {
+
+
+		String mavenRep = "【mavenリポジトリ】"; // 自環境のものに変更すること
+
+		Set<String> actualSet = Utils.searchClassInJar(new File(mavenRep, "lombok-1.16.6.jar"), "lombok");
+
+		for (String str : classSet) {
+			assertTrue(actualSet.contains(str));
+		}
+
+	}
+
+
 }
 

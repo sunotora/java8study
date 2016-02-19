@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -138,11 +137,11 @@ public final class Utils {
 
 	/**
 	 * JARファイルから、指定されたパッケージ配下にある全クラスを検索します。
-	 * 
+	 *
 	 * <p>
 	 * サブパッケージも全て検索します。
 	 * </p>
-	 * 
+	 *
 	 * @param file JARファイル
 	 * @param packageName パッケージ名
 	 * @return 検索されたクラスの完全修飾名（バイナリー名）のセット
@@ -150,23 +149,19 @@ public final class Utils {
 	 */
 	public static Set<String> searchClassInJar(File file, String packageName) throws IOException {
 		try (JarFile jar = new JarFile(file)) {
-			/* 
-			 * TODO 実装してください。
+			/*
 			 * なお、「クラスの完全修飾名」とは、以下を全て満たすものです。
 			 * 1. 拡張子が".class"である。
 			 * 2. "package-info.class"ではない。
-			 * 動作確認は、searchClassInJar(new File("【mavenリポジトリ】", "lombok-1.16.6.jar"), "lombok")でやってみてください。 
+			 * 動作確認は、searchClassInJar(new File("【mavenリポジトリ】", "lombok-1.16.6.jar"), "lombok")でやってみてください。
 			 */
-			return jar.stream()
-//					.filter(not(JarEntry::isDirectory))   // ディレクトリの場合を除く
-//					.map(JarEntry::getName)               // 名前に変更
-//					.map(Utils::loadClass)                // クラスに変更
-//					.collect(Collectors.toSet());         // Setに集計
-		}
-	}
 
-	public static <T> Predicate<T> not(Predicate<T> t) {
-		return t.negate();
+			return jar.stream()                                     // JarEntryのストリームを取得
+				.map(x -> x.getName())                              // entry中のファイル名を取得
+				.filter(str -> str.endsWith(".class"))              // 拡張子が.classのものを選択
+				.filter(str -> !str.endsWith("package-info.class")) // package-info.classではないものを選択
+				.collect(Collectors.toSet());                       // Setに集計
+		}
 	}
 
 	private Utils() {}
