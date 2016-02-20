@@ -157,9 +157,12 @@ public final class Utils {
 			 */
 
 			return jar.stream()                                     // JarEntryのストリームを取得
-				.map(x -> x.getName())                              // entry中のファイル名を取得
+				.map(jarEntry -> jarEntry.getName())                // entry中のファイル名を取得
 				.filter(str -> str.endsWith(".class"))              // 拡張子が.classのものを選択
 				.filter(str -> !str.endsWith("package-info.class")) // package-info.classではないものを選択
+				.filter(str -> str.startsWith(packageName + "/"))   // 引数パッケージから始まるものを選択
+				.map(str -> str.replace("/", "."))                  // "/"を"."に変換
+				.map(str -> str.substring(0, str.indexOf(".class")))// 先頭から”.classよリ前を取得
 				.collect(Collectors.toSet());                       // Setに集計
 		}
 	}
