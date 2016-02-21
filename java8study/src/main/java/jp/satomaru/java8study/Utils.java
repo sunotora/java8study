@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -156,14 +157,29 @@ public final class Utils {
 			 * 動作確認は、searchClassInJar(new File("【mavenリポジトリ】", "lombok-1.16.6.jar"), "lombok")でやってみてください。
 			 */
 
-			return jar.stream()                                     // JarEntryのストリームを取得
-				.map(jarEntry -> jarEntry.getName())                // entry中のファイル名を取得
-				.filter(str -> str.endsWith(".class"))              // 拡張子が.classのものを選択
-				.filter(str -> !str.endsWith("package-info.class")) // package-info.classではないものを選択
-				.filter(str -> str.startsWith(packageName + "/"))   // 引数パッケージから始まるものを選択
-				.map(str -> str.replace("/", "."))                  // "/"を"."に変換
-				.map(str -> str.substring(0, str.indexOf(".class")))// 先頭から”.classよリ前を取得
-				.collect(Collectors.toSet());                       // Setに集計
+//			return jar.stream()                                     // JarEntryのストリームを取得
+//				.map(jarEntry -> jarEntry.getName())                // entry中のファイル名を取得
+//				.filter(str -> str.endsWith(".class"))              // 拡張子が.classのものを選択
+//				.filter(str -> !str.endsWith("package-info.class")) // package-info.classではないものを選択
+//				.filter(str -> str.startsWith(packageName + "/"))   // 引数パッケージから始まるものを選択
+//				.map(str -> str.replace("/", "."))                  // "/"を"."に変換
+//				.map(str -> str.substring(0, str.indexOf(".class")))// 先頭から”.classよリ前を取得
+//				.collect(Collectors.toSet());                       // Setに集計
+
+
+			String suffix = ".class";
+			String prefix = packageName.replace('.', '/') + "/";                     // packageName中のドットをスラッシュに置換しておかないと、filterでヒットしません。
+			                                                                         // "lombok.launch"等のテストケースが漏れてましたね。
+			                                                                         // また、streamに依存しない処理は、予め済ませておきましょう。速度が向上します。
+
+			return jar.stream()
+				.map(JarEntry::getName)
+				.filter(name -> name.startsWith(prefix)                              // 最も絞り込みが期待できる評価式から実行しましょう
+					&& name.endsWith(suffix)                                         // streamメソッドの数を減らすのが容易である場合は、減らした方が速度が向上します。
+					&& !name.endsWith("package-info.class"))                         // 可読性と相談しながら、streamメソッドの数を減らすことを検討してください。
+				.map(name -> name.substring(0, name.length() - suffix.length())      // 文字列の長さが変化してなく、かつ末尾がsuffixであることは、保証されています。
+					.replace('/', '.'))                                              // replace(CharSequence,CharSequence)よりも、こっちの方が高速です。
+				.collect(Collectors.toSet());
 		}
 	}
 
