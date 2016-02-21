@@ -236,7 +236,7 @@ public class UtilsTest {
 //		}
 	}
 
-	private final String mavenRep = "【mavenリポジトリ】"; // 自環境のものに変更すること
+	private final String mavenRep = "C:/Users/STB/.m2/repository/org/projectlombok/lombok/1.16.6"; // 自環境のものに変更すること
 
 	@Test
 	public void testSearchClassInJarFromLombok() throws Exception {
@@ -247,6 +247,24 @@ public class UtilsTest {
 			assertTrue(actualSet.contains(str));
 		}
 
+		Set<String> actualSet2 = Utils.searchClassInJar(new File(mavenRep, "lombok-1.16.6.jar"), "lombok.launch");
+
+		assertThat(actualSet2.size(), is(14));
+		assertThat(actualSet2, hasItems(
+				"lombok.launch.Agent",
+				"lombok.launch.AnnotationProcessorHider",
+				"lombok.launch.AnnotationProcessorHider$AnnotationProcessor",
+				"lombok.launch.Main",
+				"lombok.launch.PatchFixesHider",
+				"lombok.launch.PatchFixesHider$Delegate",
+				"lombok.launch.PatchFixesHider$ExtensionMethod",
+				"lombok.launch.PatchFixesHider$LombokDeps",
+				"lombok.launch.PatchFixesHider$PatchFixes",
+				"lombok.launch.PatchFixesHider$Transform",
+				"lombok.launch.PatchFixesHider$Util",
+				"lombok.launch.PatchFixesHider$Val",
+				"lombok.launch.PatchFixesHider$ValPortal",
+				"lombok.launch.ShadowClassLoader"));
 	}
 
 	@Test
