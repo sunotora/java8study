@@ -90,20 +90,29 @@ public class CsvBuilder<E> {
 	 * @param columns 列の配列
 	 * @return CSVの行
 	 */
-	private String createRecord(Object[] columns) {
-		return Stream.of(columns)                                       // オブジェクト配列のストリームを生成
-			.map(Optional::ofNullable)                                  // Optionalで包む(null許可)
-			.map(opt -> opt.map(this::getFormatedString).orElse(""))    // Optional<Object>を文字列化処理する(nullの時はブランク)
-			.collect(Collectors.joining(columnSeparator));              // columnSeparatorで連結して返却
-	}
+//	private String createRecord(Object[] columns) {
+//		return Stream.of(columns)                                       // オブジェクト配列のストリームを生成
+//			.map(Optional::ofNullable)                                  // Optionalで包む(null許可)
+//			.map(opt -> opt.map(this::getFormatedString).orElse(""))    // Optional<Object>を文字列化処理する(nullの時はブランク)
+//			.collect(Collectors.joining(columnSeparator));              // columnSeparatorで連結して返却
+//	}
+//
+//	// ここがどうしてもJava8っぽく書けませんでしたのでメソッド切り出しして参照しています。
+//	private String getFormatedString(Object column) {
+//		if (formatters.containsKey(column)) {
+//			return formatters.get(column).apply(column);
+//		} else {
+//			return defaultFormat(column);
+//		}
+//	}
 
-	// ここがどうしてもJava8っぽく書けませんでしたのでメソッド切り出しして参照しています。
-	private String getFormatedString(Object column) {
-		if (formatters.containsKey(column)) {
-			return formatters.get(column).apply(column);
-		} else {
-			return defaultFormat(column);
-		}
+	private String createRecord(Object[] columns) {
+		return Stream.of(columns)
+			.map(column -> Optional.ofNullable(column)
+					// Map#getOrDefault(Object, V) というメソッドを使えば、ラムダ式で全て処理できます。
+					.map(value -> formatters.getOrDefault(value.getClass(), this::defaultFormat).apply(value))
+					.orElse(""))
+			.collect(Collectors.joining(columnSeparator));
 	}
 
 	/**
@@ -131,6 +140,8 @@ public class CsvBuilder<E> {
 		}
 
 		return new StringBuilder(string.length() + quotation.length() * 2 + 16) // 領域の拡張が起きないように？
+		                                                                        // -> はい。16がマジックナンバーで申し訳ないｗ
+		                                                                        // -> 16は、置換による文字数の拡張予測です。
 				.append(quotation)
 				.append(string.replace(quotation, escapedQuotation))
 				.append(quotation)

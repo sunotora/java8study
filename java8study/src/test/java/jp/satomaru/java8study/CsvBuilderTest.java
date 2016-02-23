@@ -27,13 +27,14 @@ public class CsvBuilderTest {
 	}
 
 	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("\"yyyy年MM月dd日\"");
 
 	private CsvBuilder<MyEntity> tested;
 
 	@Before
 	public void setUp() {
 		tested = new CsvBuilder<>(entity -> new Object[] {entity.id, entity.name, entity.since, entity.bool});
-		tested.addFormatter(LocalDate.class, date -> date.format(DateTimeFormatter.ofPattern("\"yyyy-MM-dd\"")));
+		tested.addFormatter(LocalDate.class, date -> date.format(DATE_TIME_FORMATTER));
 	}
 
 	@Test
@@ -44,8 +45,8 @@ public class CsvBuilderTest {
 				new MyEntity(3, "baz", null, false)));
 
 		assertThat(actual, is(
-				"1,\"foo\",\"2015-12-01\",true" + LINE_SEPARATOR +
-				"2,\"bar\",\"2016-02-15\",false" + LINE_SEPARATOR +
+				"1,\"foo\",\"2015年12月01日\",true" + LINE_SEPARATOR +
+				"2,\"bar\",\"2016年02月15日\",false" + LINE_SEPARATOR +
 				"3,\"baz\",,false"));
 	}
 }
