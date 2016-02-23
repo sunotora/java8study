@@ -16,7 +16,7 @@ import lombok.Setter;
  *
  * @param <E> CSVを作成する元となるオブジェクト
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor // final かつ 未初期化のフィールドだけを引数に受け取るコンストラクタを自動生成できる。
 @Setter
 public class CsvBuilder<E> {
 
@@ -40,7 +40,7 @@ public class CsvBuilder<E> {
 
 	/**
 	 * 列を文字列に変換する関数を追加します。
-	 * 
+	 *
 	 * @param type 列の型
 	 * @param formatter 列を文字列に変換する関数
 	 * @return このオブジェクト自身
@@ -53,12 +53,12 @@ public class CsvBuilder<E> {
 
 	/**
 	 * CSVを作成します。
-	 * 
+	 *
 	 * <p>
 	 * 各オブジェクトを{@link #picker}で配列化し、{@link #formatters}で文字列に変換して{@link #columnSeparator}で連結した後、
 	 * その各オブジェクトの結果を{@link #lineSeparator}で連結します。
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * {@link #formatters}に列の型に対応する関数が追加されていない型の場合、
 	 * Number型のサブクラスおよびBoolean型の時は{@link Object#toString()}を使用します。
@@ -67,42 +67,55 @@ public class CsvBuilder<E> {
 	 * 文字列の前後に{@link #quotation}を追加します。
 	 * また列の値がnullの時は、型に関係なくブランクになります。
 	 * </p>
-	 * 
+	 *
 	 * @param entities CSVを作成する元となるオブジェクトのコレクション
 	 * @return CSV
 	 */
 	public String build(Collection<E> entities) {
 		return entities.stream()
-				// TODO 実装してください。なお、先にcreateRecord(Object[])を実装して、それを利用してください。
+				.map(picker)                                  // EntityクラスをObject[]に変換
+				.map(this::createRecord)                      // １行ずつ文字列変換
+				.collect(Collectors.joining(lineSeparator));  // lineSeparatorで連結して返却
 	}
 
 	/**
 	 * CSVの行を作成します。
-	 * 
+	 *
 	 * <p>
 	 * 列を{@link #formatters}で文字列に変換した後、{@link #columnSeparator}で連結します。
 	 * {@link #formatters}に列の型に対応する関数が追加されていない型の場合は{@link #defaultFormat(Object)}を使用します。
 	 * また列がnullの場合はブランクを使用します。
 	 * </p>
-	 * 
+	 *
 	 * @param columns 列の配列
 	 * @return CSVの行
 	 */
 	private String createRecord(Object[] columns) {
-		return Stream.of(columns)
-				// TODO 実装してください。
+		return Stream.of(columns)                                       // オブジェクト配列のストリームを生成
+			.map(Optional::ofNullable)                                  // Optionalで包む(null許可)
+			.map(opt -> opt.map(this::getFormatedString).orElse(""))    // Optional<Object>を文字列化処理する(nullの時はブランク)
+			.collect(Collectors.joining(columnSeparator));              // columnSeparatorで連結して返却
+	}
+
+	// ここがどうしてもJava8っぽく書けませんでしたのでメソッド切り出しして参照しています。
+	private String getFormatedString(Object column) {
+		if (formatters.containsKey(column)) {
+			return formatters.get(column).apply(column);
+		} else {
+			return defaultFormat(column);
+		}
 	}
 
 	/**
 	 * 列を文字列に変換する関数が存在しない場合のデフォルトフォーマッターです。
-	 * 
+	 *
 	 * <p>
 	 * Number型のサブクラスおよびBoolean型の時は{@link Object#toString()}を使用します。
 	 * それ以外の型の時は、{@link Object#toString()}で文字列に変換した後、
 	 * 文字列中の{@link #quotation}を{@link #escapedQuotation}に置換して、
 	 * 文字列の前後に{@link #quotation}を追加します。
 	 * </p>
-	 * 
+	 *
 	 * @param column 列
 	 * @return 変換後の文字列
 	 */
@@ -117,7 +130,7 @@ public class CsvBuilder<E> {
 			return string;
 		}
 
-		return new StringBuilder(string.length() + quotation.length() * 2 + 16)
+		return new StringBuilder(string.length() + quotation.length() * 2 + 16) // 領域の拡張が起きないように？
 				.append(quotation)
 				.append(string.replace(quotation, escapedQuotation))
 				.append(quotation)
