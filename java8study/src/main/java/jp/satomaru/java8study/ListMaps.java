@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
@@ -76,7 +77,8 @@ public class ListMaps<K, E> {
 		 * @return ListMapsオブジェクト
 		 */
 		public ListMaps<K, E> end() {
-			return ;
+			// staticでない内部クラスから、その定義クラスのインスタンスを参照
+			return ListMaps.this;
 		}
 	}
 
@@ -105,12 +107,14 @@ public class ListMaps<K, E> {
 	 */
 	public Lists begin(K key) {
 
-		if (!instance.containsKey(key)) {
-			// 存在する場合
-			return instance.get(key);
+		if (instance.containsKey(key)) {
+			// 存在する場合、MapからListを取得してListsに変換して返却
+			return new Lists(instance.get(key));
 		} else {
-			// 存在しない場合
-			instance.put(key, new ArrayList<>());
+			// 存在しない場合、新たにListsを作成してMapにputし、Listsを返却
+			ListMaps<K, E>.Lists lists = new Lists(listGenerator.get());
+			instance.put(key, lists.current);
+			return lists;
 		}
 	}
 
@@ -121,6 +125,12 @@ public class ListMaps<K, E> {
 	 * @return 作成したマップ
 	 */
 	public Map<K, List<E>> end(boolean immutable) {
+
+		// List<E>をイミュータブルに変更
+		for (Entry<K, List<E>> entry : instance.entrySet() ) {
+			instance.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
+		}
+
 		return Collections.unmodifiableMap(instance);
 	}
 
