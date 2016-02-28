@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
@@ -64,9 +63,7 @@ public class ListMaps<K, E> {
 		public Lists add(@SuppressWarnings("unchecked") E... values) {
 
 			// 要素を追加
-			for (E value : values) {
-				current.add(value);
-			}
+			Collections.addAll(current, values);
 			// 自身を返却
 			return this;
 		}
@@ -95,7 +92,10 @@ public class ListMaps<K, E> {
 	 * @param listGenerator リストを生成する関数
 	 */
 	private ListMaps(Supplier<Map<K, List<E>>> mapGenerator, Supplier<List<E>> listGenerator) {
+
+		// mapのインスタンスを生成
 		instance = mapGenerator.get();
+		// listのジェネレーターを保持
 		this.listGenerator = listGenerator;
 	}
 
@@ -127,9 +127,7 @@ public class ListMaps<K, E> {
 	public Map<K, List<E>> end(boolean immutable) {
 
 		// List<E>をイミュータブルに変更
-		for (Entry<K, List<E>> entry : instance.entrySet() ) {
-			instance.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
-		}
+		instance.replaceAll((key, list) -> Collections.unmodifiableList(list));
 
 		return Collections.unmodifiableMap(instance);
 	}
