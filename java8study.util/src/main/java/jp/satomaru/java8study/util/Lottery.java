@@ -38,11 +38,9 @@ public class Lottery implements Iterator<Integer> {
 	 * @return 抽選した数字（数字がなくなった場合は{@link Optional#empty()}）
 	 */
 	public Optional<Integer> draw() {
-		if (list.isEmpty()) {
-			return Optional.empty();
-		}
-
-		return Optional.of(list.remove(Numbers.randomInt(list.size())));
+		return (list.isEmpty())
+				? Optional.empty()
+				: Optional.of(list.remove(Numbers.randomInt(list.size())));
 	}
 
 	/**
