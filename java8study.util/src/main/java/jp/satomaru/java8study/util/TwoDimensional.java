@@ -18,4 +18,24 @@ public interface TwoDimensional {
 	 * @return Y座標
 	 */
 	int getY();
+
+	/**
+	 * 座標が等しいことを判定します。
+	 * 
+	 * @param other 比較する対象
+	 * @return 座標が等しい場合はtrue
+	 */
+	default boolean isSamePosition(TwoDimensional other) {
+		return getX() == other.getX() && getY() == other.getX();
+	}
+
+	/**
+	 * 座標が異なることを判定します。
+	 * 
+	 * @param other 比較する対象
+	 * @return 座標が異なる場合はtrue
+	 */
+	default boolean isNotSamePosition(TwoDimensional other) {
+		return !isSamePosition(other);
+	}
 }

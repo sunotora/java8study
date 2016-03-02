@@ -18,13 +18,15 @@ public class Lottery implements Iterator<Integer> {
 	 * コンストラクタ。
 	 * 
 	 * <p>
-	 * 抽選対象となる数字は、1から引数で指定された数字までとなります。
+	 * 抽選対象となる数字は、0から引数で指定された数字-1までとなります。
 	 * </p>
 	 * 
-	 * @param max 抽選に用いる最大の数字
+	 * @param max 抽選に用いる最大の数字（ただしこの数字を含まない）
 	 */
-	public Lottery(int max) {
-		list = IntStream.range(1, max + 1).boxed().collect(Collectors.toCollection(LinkedList::new));
+	public Lottery(int maxExclusive) {
+		list = IntStream.range(0, Args.of("maxExclusive", maxExclusive).min(1).get())
+				.boxed()
+				.collect(Collectors.toCollection(LinkedList::new));
 	}
 
 	/**
@@ -38,11 +40,9 @@ public class Lottery implements Iterator<Integer> {
 	 * @return 抽選した数字（数字がなくなった場合は{@link Optional#empty()}）
 	 */
 	public Optional<Integer> draw() {
-		if (list.isEmpty()) {
-			return Optional.empty();
-		}
-
-		return Optional.of(list.remove(Numbers.randomInt(list.size())));
+		return (list.isEmpty())
+				? Optional.empty()
+				: Optional.of(list.remove(Numbers.randomInt(list.size())));
 	}
 
 	/**
