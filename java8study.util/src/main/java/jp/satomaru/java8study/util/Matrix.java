@@ -244,7 +244,7 @@ public class Matrix<T> {
 	 * @return 同じ座標、同じ値（null同士を含む）の配列要素が存在する場合はtrue
 	 */
 	public boolean exists(int x, int y, T value) {
-		return Objects.equals(value, getValue(x, y));
+		return get(x, y).isSameValue(value);
 	}
 
 	/**

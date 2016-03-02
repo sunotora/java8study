@@ -225,7 +225,7 @@ public class Line<T> {
 	 * @return 同じインデックス、同じ値（null同士を含む）の配列要素が存在する場合はtrue
 	 */
 	public boolean exists(int index, T value) {
-		return Objects.equals(value, getValue(index));
+		return get(index).isSameValue(value);
 	}
 
 	/**
