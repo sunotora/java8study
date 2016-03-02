@@ -3,6 +3,7 @@ package jp.satomaru.java8study.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -53,6 +54,46 @@ public class Matrix<T> {
 		public Item<T> setValue(BiFunction<Integer, Integer, T> positionToValue) {
 			value = positionToValue.apply(x, y);
 			return this;
+		}
+
+		/**
+		 * 値が等しいことを判定します。
+		 * 
+		 * @param other 比較する値
+		 * @return 値が等しい場合はtrue
+		 */
+		public boolean isSameValue(T other) {
+			return Objects.equals(value, other);
+		}
+
+		/**
+		 * 値が等しいことを判定します。
+		 * 
+		 * @param other 比較する値を持つ配列要素
+		 * @return 値が等しい場合はtrue
+		 */
+		public boolean isSameValue(Item<T> item) {
+			return Objects.equals(value, item.getValue());
+		}
+
+		/**
+		 * 値が異なることを判定します。
+		 * 
+		 * @param other 比較する値
+		 * @return 値が異なる場合はtrue
+		 */
+		public boolean isNotSameValue(T other) {
+			return !isSameValue(other);
+		}
+
+		/**
+		 * 値が異なることを判定します。
+		 * 
+		 * @param other 比較する値を持つ配列要素
+		 * @return 値が異なる場合はtrue
+		 */
+		public boolean isNotSameValue(Item<T> item) {
+			return !isSameValue(item);
 		}
 
 		/**
@@ -192,6 +233,72 @@ public class Matrix<T> {
 	 */
 	public void setValue(TwoDimensional twoDimensional, T value) {
 		setValue(twoDimensional.getX(), twoDimensional.getX(), value);
+	}
+
+	/**
+	 * 配列要素が存在することを判定します。
+	 * 
+	 * @param x 配列要素のX座標
+	 * @param y 配列要素のY座標
+	 * @param value 値
+	 * @return 同じ座標、同じ値（null同士を含む）の配列要素が存在する場合はtrue
+	 */
+	public boolean exists(int x, int y, T value) {
+		return Objects.equals(value, getValue(x, y));
+	}
+
+	/**
+	 * 配列要素が存在することを判定します。
+	 * 
+	 * @param twoDimensional 2次元座標を持つオブジェクト
+	 * @param value 値
+	 * @return 同じ座標、同じ値（null同士を含む）の配列要素が存在する場合はtrue
+	 */
+	public boolean exists(TwoDimensional twoDimensional, T value) {
+		return exists(twoDimensional.getX(), twoDimensional.getY(), value);
+	}
+
+	/**
+	 * 配列要素が存在することを判定します。
+	 * 
+	 * @param item 配列要素
+	 * @return 同じ座標、同じ値（null同士を含む）の配列要素が存在する場合はtrue
+	 */
+	public boolean exists(Item<T> item) {
+		return exists(item, item.getValue());
+	}
+
+	/**
+	 * 配列要素が存在しないことを判定します。
+	 * 
+	 * @param x 配列要素のX座標
+	 * @param y 配列要素のY座標
+	 * @param value 値
+	 * @return 同じ座標、同じ値（null同士を含む）の配列要素が存在しない場合はtrue
+	 */
+	public boolean notExists(int x, int y, T value) {
+		return !exists(x, y, value);
+	}
+
+	/**
+	 * 配列要素が存在しないことを判定します。
+	 * 
+	 * @param twoDimensional 2次元座標を持つオブジェクト
+	 * @param value 値
+	 * @return 同じ座標、同じ値（null同士を含む）の配列要素が存在しない場合はtrue
+	 */
+	public boolean notExists(TwoDimensional twoDimensional, T value) {
+		return !exists(twoDimensional, value);
+	}
+
+	/**
+	 * 配列要素が存在しないことを判定します。
+	 * 
+	 * @param item 配列要素
+	 * @return 同じ座標、同じ値（null同士を含む）の配列要素が存在しない場合はtrue
+	 */
+	public boolean notExists(Item<T> item) {
+		return !exists(item);
 	}
 
 	/**
