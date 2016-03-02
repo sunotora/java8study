@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 public final class Numbers {
 
 	/**
-	 * 整数の乱数を発生させます。
+	 * 正の整数の乱数を発生させます。
 	 * 
 	 * <p>
 	 * 発生する乱数は、0から引数の最大値-1までの整数です。
@@ -20,6 +20,6 @@ public final class Numbers {
 	 * @return 0から引数の最大値-1までのいずれかの数
 	 */
 	public static int randomInt(int maxExclusive) {
-		return (int) Math.floor(Math.random() * maxExclusive);
+		return (int) Math.floor(Math.random() * Args.of("maxExclusive", maxExclusive).min(0).get());
 	}
 }

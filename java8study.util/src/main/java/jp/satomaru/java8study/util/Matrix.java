@@ -78,8 +78,11 @@ public class Matrix<T> {
 	/** 配列要素。 */
 	private final List<List<Item<T>>> rows;
 
-	/** 配列要素数。 */
-	private final int size;
+	/** 幅。 */
+	private final int width;
+
+	/** 高さ。 */
+	private final int height;
 
 	/**
 	 * コンストラクタ。
@@ -95,6 +98,9 @@ public class Matrix<T> {
 	 * @param positionToValue 2次元座標を受け取り、値を返す関数
 	 */
 	public Matrix(int width, int height, BiFunction<Integer, Integer, T> positionToValue) {
+		this.width = Args.of("width", width).min(1).get();
+		this.height = Args.of("height", height).min(1).get();
+
 		List<List<Item<T>>> rows = new ArrayList<>(height);
 
 		for (int y = 0; y < height; y++) {
@@ -108,7 +114,6 @@ public class Matrix<T> {
 		}
 
 		this.rows = Collections.unmodifiableList(rows);
-		this.size = width * height;
 	}
 
 	/**
@@ -134,7 +139,7 @@ public class Matrix<T> {
 	 * @return 配列要素
 	 */
 	public Item<T> get(int x, int y) {
-		return rows.get(y).get(x);
+		return rows.get(assertY(y)).get(assertX(x));
 	}
 
 	/**
@@ -144,7 +149,7 @@ public class Matrix<T> {
 	 * @return 配列要素
 	 */
 	public Item<T> get(TwoDimensional twoDimensional) {
-		return rows.get(twoDimensional.getY()).get(twoDimensional.getX());
+		return get(twoDimensional.getX(), twoDimensional.getY());
 	}
 
 	/**
@@ -155,7 +160,7 @@ public class Matrix<T> {
 	 * @return 配列要素の値
 	 */
 	public T getValue(int x, int y) {
-		return rows.get(y).get(x).getValue();
+		return get(x, y).getValue();
 	}
 
 	/**
@@ -165,7 +170,7 @@ public class Matrix<T> {
 	 * @return 配列要素の値
 	 */
 	public T getValue(TwoDimensional twoDimensional) {
-		return rows.get(twoDimensional.getY()).get(twoDimensional.getX()).getValue();
+		return getValue(twoDimensional.getX(), twoDimensional.getY());
 	}
 
 	/**
@@ -176,7 +181,7 @@ public class Matrix<T> {
 	 * @param value 配列要素の値
 	 */
 	public void setValue(int x, int y, T value) {
-		rows.get(y).get(x).setValue(value);
+		get(x, y).setValue(value);
 	}
 
 	/**
@@ -186,7 +191,7 @@ public class Matrix<T> {
 	 * @param value 配列要素の値
 	 */
 	public void setValue(TwoDimensional twoDimensional, T value) {
-		rows.get(twoDimensional.getY()).get(twoDimensional.getX()).setValue(value);
+		setValue(twoDimensional.getX(), twoDimensional.getX(), value);
 	}
 
 	/**
@@ -205,7 +210,7 @@ public class Matrix<T> {
 	 * @return ストリーム
 	 */
 	public Stream<Item<T>> row(int y) {
-		return rows.get(y).stream();
+		return rows.get(assertY(y)).stream();
 	}
 
 	/**
@@ -215,7 +220,26 @@ public class Matrix<T> {
 	 * @return ストリーム
 	 */
 	public Stream<Item<T>> col(int x) {
+		assertX(x);
 		return rows.stream().map(row -> row.get(x));
+	}
+
+	/**
+	 * 幅を取得します。
+	 * 
+	 * @return 幅
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * 高さを取得します。
+	 * 
+	 * @return 高さ
+	 */
+	public int getHeight() {
+		return height;
 	}
 
 	/**
@@ -224,7 +248,7 @@ public class Matrix<T> {
 	 * @return 配列要素数
 	 */
 	public int size() {
-		return size;
+		return width * height;
 	}
 
 	/**
@@ -235,5 +259,25 @@ public class Matrix<T> {
 	@Override
 	public String toString() {
 		return rows.toString();
+	}
+
+	/**
+	 * X座標が妥当であることを検査します。
+	 * 
+	 * @param x X座標
+	 * @return X座標
+	 */
+	private int assertX(int x) {
+		return Args.of("x", x).range(0, width - 1).get();
+	}
+
+	/**
+	 * Y座標が妥当であることを検査します。
+	 * 
+	 * @param y Y座標
+	 * @return Y座標
+	 */
+	private int assertY(int y) {
+		return Args.of("y", y).range(0, height - 1).get();
 	}
 }

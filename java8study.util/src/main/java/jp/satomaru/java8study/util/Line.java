@@ -91,6 +91,8 @@ public class Line<T> {
 	 * @param indexToValue インデックス番号を受け取り、値を返す関数
 	 */
 	public Line(int size, Function<Integer, T> indexToValue) {
+		this.size = Args.of("size", size).min(1).get();
+
 		List<Item<T>> elements = new ArrayList<>(size);
 
 		for (int i = 0; i < size; i++) {
@@ -98,7 +100,6 @@ public class Line<T> {
 		}
 
 		this.elements = Collections.unmodifiableList(elements);
-		this.size = size;
 	}
 
 	/**
@@ -122,7 +123,7 @@ public class Line<T> {
 	 * @return 配列要素
 	 */
 	public Item<T> get(int index) {
-		return elements.get(index);
+		return elements.get(Args.of("index", index).range(0, size - 1).get());
 	}
 
 	/**

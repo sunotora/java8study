@@ -24,7 +24,7 @@ public class Lottery implements Iterator<Integer> {
 	 * @param max 抽選に用いる最大の数字（ただしこの数字を含まない）
 	 */
 	public Lottery(int maxExclusive) {
-		list = IntStream.range(0, maxExclusive)
+		list = IntStream.range(0, Args.of("maxExclusive", maxExclusive).min(1).get())
 				.boxed()
 				.collect(Collectors.toCollection(LinkedList::new));
 	}
