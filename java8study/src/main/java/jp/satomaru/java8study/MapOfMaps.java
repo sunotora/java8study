@@ -122,10 +122,15 @@ public class MapOfMaps<K, S, V> {
 	 */
 	public Map<K, Map<S, V>> end(boolean immutable) {
 
-		// Map<S, V>をイミュータブルに変更
-		instance.replaceAll((key, map) -> Collections.unmodifiableMap(map));
+		if(immutable) {
 
-		return Collections.unmodifiableMap(instance);
+			// Map<S, V>をイミュータブルに変更
+			instance.replaceAll((key, map) -> Collections.unmodifiableMap(map));
+
+			return Collections.unmodifiableMap(instance);
+		} else {
+			return end();
+		}
 	}
 
 	/**
