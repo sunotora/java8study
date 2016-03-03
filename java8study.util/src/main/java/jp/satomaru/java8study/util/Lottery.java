@@ -1,58 +1,73 @@
 package jp.satomaru.java8study.util;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
- * 数字を重複せずにランダムに抽選します。
+ * 福引です。
+ * 
+ * <p>
+ * いわゆる「ボックスガチャ」を実現します。
+ * </p>
  */
-public class Lottery implements Iterator<Integer> {
+public class Lottery<T> implements Iterator<T> {
 
-	/** 数字のリスト。 */
-	private final LinkedList<Integer> list;
+	/** 要素（福引の中身）。 */
+	private final LinkedList<T> elements;
 
 	/**
-	 * コンストラクタ。
+	 * コンストラクタ
 	 * 
-	 * <p>
-	 * 抽選対象となる数字は、0から引数で指定された数字-1までとなります。
-	 * </p>
-	 * 
-	 * @param max 抽選に用いる最大の数字（ただしこの数字を含まない）
+	 * @param elements 要素（福引の中身）
 	 */
-	public Lottery(int maxExclusive) {
-		list = IntStream.range(0, Args.of("maxExclusive", maxExclusive).min(1).get())
-				.boxed()
-				.collect(Collectors.toCollection(LinkedList::new));
+	public Lottery(Collection<T> elements) {
+		this.elements = new LinkedList<>(elements);
+	}
+
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param elements 要素（福引の中身）
+	 */
+	public Lottery(Stream<T> elements) {
+		this.elements = elements.collect(Collectors.toCollection(LinkedList::new));
+	}
+
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param elements 要素（福引の中身）
+	 */
+	@SafeVarargs
+	public Lottery(T... elements) {
+		this.elements = new LinkedList<>();
+		Collections.addAll(this.elements, elements);
 	}
 
 	/**
 	 * 抽選を行います。
 	 * 
-	 * <p>
-	 * 抽選される数字は重複しません。
-	 * 数字が残っていない場合は、{@link Optional#empty()}になります。
-	 * </p>
-	 * 
-	 * @return 抽選した数字（数字がなくなった場合は{@link Optional#empty()}）
+	 * @return 抽選した要素（要素がなくなった場合は{@link Optional#empty()}）
 	 */
-	public Optional<Integer> draw() {
-		return (list.isEmpty())
+	public Optional<T> draw() {
+		return (elements.isEmpty())
 				? Optional.empty()
-				: Optional.of(list.remove(Numbers.randomInt(list.size())));
+				: Optional.of(elements.remove(Numbers.randomInt(elements.size())));
 	}
 
 	/**
-	 * まだ抽選されていない数字が残っていることを判定します。
+	 * まだ抽選されていない要素が残っていることを判定します。
 	 * 
-	 * @return まだ抽選されていない数字が残っている場合はtrue
+	 * @return まだ抽選されていない要素が残っている場合はtrue
 	 */
 	@Override
 	public boolean hasNext() {
-		return !list.isEmpty();
+		return !elements.isEmpty();
 	}
 
 	/**
@@ -66,12 +81,12 @@ public class Lottery implements Iterator<Integer> {
 	 * {@code draw().get()}
 	 * </p>
 	 * 
-	 * @return 抽選した数字
-	 * @throws java.util.NoSuchElementException 数字が残っていない場合
+	 * @return 抽選した要素
+	 * @throws java.util.NoSuchElementException 要素が残っていない場合
 	 * @see #draw()
 	 */
 	@Override
-	public Integer next() {
+	public T next() {
 		return draw().get();
 	}
 }
