@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -16,6 +17,17 @@ import java.util.stream.Stream;
  * </p>
  */
 public class Lottery<T> implements Iterator<T> {
+
+	/**
+	 * 整数の福引を作成します。
+	 * 
+	 * @param startInclusive 開始の数字（この値を含む）
+	 * @param endInclusive 終了の数字（この値を含む）
+	 * @return 整数の福引
+	 */
+	public static Lottery<Integer> ofInteger(int startInclusive, int endInclusive) {
+		return new Lottery<>(IntStream.rangeClosed(startInclusive, endInclusive).boxed());
+	}
 
 	/** 要素（福引の中身）。 */
 	private final LinkedList<T> elements;
