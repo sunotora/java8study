@@ -126,10 +126,14 @@ public class ListMaps<K, E> {
 	 */
 	public Map<K, List<E>> end(boolean immutable) {
 
-		// List<E>をイミュータブルに変更
-		instance.replaceAll((key, list) -> Collections.unmodifiableList(list));
+		if(immutable) {
+			// List<E>をイミュータブルに変更
+			instance.replaceAll((key, list) -> Collections.unmodifiableList(list));
 
-		return Collections.unmodifiableMap(instance);
+			return Collections.unmodifiableMap(instance);
+		} else {
+			return end();
+		}
 	}
 
 	/**
