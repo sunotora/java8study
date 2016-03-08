@@ -151,6 +151,15 @@ public class Matrix<T> {
 	}
 
 	/**
+	 * 全ての配列要素の値を含んだストリームを取得します。
+	 * 
+	 * @return ストリーム
+	 */
+	public Stream<T> values() {
+		return flat().map(Item::getValue);
+	}
+
+	/**
 	 * 指定されたY座標の配列要素のみを含んだストリームを取得します。
 	 * 
 	 * @param y Y座標
@@ -158,6 +167,16 @@ public class Matrix<T> {
 	 */
 	public Stream<Item<T>> row(int y) {
 		return rows.get(assertY(y)).stream();
+	}
+
+	/**
+	 * 指定されたY座標の配列要素のみの値を含んだストリームを取得します。
+	 * 
+	 * @param y Y座標
+	 * @return ストリーム
+	 */
+	public Stream<T> rowValues(int y) {
+		return rows.get(assertY(y)).stream().map(Item::getValue);
 	}
 
 	/**
@@ -169,6 +188,17 @@ public class Matrix<T> {
 	public Stream<Item<T>> col(int x) {
 		assertX(x);
 		return rows.stream().map(row -> row.get(x));
+	}
+
+	/**
+	 * 指定されたX座標の配列要素のみの値を含んだストリームを取得します。
+	 * 
+	 * @param x X座標
+	 * @return ストリーム
+	 */
+	public Stream<T> colValues(int x) {
+		assertX(x);
+		return rows.stream().map(row -> row.get(x)).map(Item::getValue);
 	}
 
 	/**

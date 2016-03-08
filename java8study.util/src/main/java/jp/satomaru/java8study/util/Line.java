@@ -132,6 +132,15 @@ public class Line<T> {
 	}
 
 	/**
+	 * 全ての配列要素の値を含んだストリームを取得します。
+	 * 
+	 * @return ストリーム
+	 */
+	public Stream<T> values() {
+		return elements.stream().map(Item::getValue);
+	}
+
+	/**
 	 * 配列要素数を取得します。
 	 * 
 	 * @return 配列要素数
