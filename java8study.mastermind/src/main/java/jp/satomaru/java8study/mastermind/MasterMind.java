@@ -13,6 +13,7 @@ import jp.satomaru.java8study.mastermind.core.ButtonPanel;
 import jp.satomaru.java8study.mastermind.core.NumberPanel;
 import jp.satomaru.java8study.mastermind.core.NumberPanel.NumberAdapter;
 import jp.satomaru.java8study.util.Matrix;
+import jp.satomaru.java8study.util.variable.TwoDimensionalVariable;
 
 /**
  * ヒントを元に、3x3マスの数字を当てるゲームです。
@@ -167,7 +168,7 @@ public class MasterMind extends Application {
 	 * 
 	 * @param item クリックされた数字マス
 	 */
-	private void onNumberLeftClick(Matrix.Item<NumberAdapter> item) {
+	private void onNumberLeftClick(TwoDimensionalVariable<NumberAdapter> item) {
 		// TODO 実装してください。
 	}
 
@@ -183,7 +184,7 @@ public class MasterMind extends Application {
 	 * 
 	 * @param item クリックされた数字マス
 	 */
-	private void onNumberRightClick(Matrix.Item<NumberAdapter> item) {
+	private void onNumberRightClick(TwoDimensionalVariable<NumberAdapter> item) {
 		// TODO 実装してください。
 	}
 }

@@ -1,9 +1,19 @@
 package jp.satomaru.java8study.util;
 
+import lombok.Value;
+
 /**
  * インデックス番号を持つことを表すインターフェースです。
  */
 public interface Indexed {
+
+	/**
+	 * インデックス番号の実装です。
+	 */
+	@Value
+	public static final class Point implements Indexed {
+		private final int index;
+	}
 
 	/**
 	 * インデックス番号を取得します。

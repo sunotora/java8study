@@ -1,9 +1,20 @@
 package jp.satomaru.java8study.util;
 
+import lombok.Value;
+
 /**
  * 2次元座標を持つことを表すインターフェースです。
  */
 public interface TwoDimensional {
+
+	/**
+	 * 2次元座標の実装です。
+	 */
+	@Value
+	public static final class Point implements TwoDimensional {
+		private final int x;
+		private final int y;
+	}
 
 	/**
 	 * X座標を取得します。

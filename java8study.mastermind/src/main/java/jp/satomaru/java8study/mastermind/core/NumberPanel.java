@@ -15,6 +15,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import jp.satomaru.java8study.util.Matrix;
 import jp.satomaru.java8study.util.TwoDimensional;
+import jp.satomaru.java8study.util.variable.TwoDimensionalVariable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -82,8 +83,8 @@ public class NumberPanel {
 	public NumberPanel(
 			int width,
 			int height,
-			Consumer<Matrix.Item<NumberAdapter>> onLeftClick,
-			Consumer<Matrix.Item<NumberAdapter>> onRightClick) {
+			Consumer<TwoDimensionalVariable<NumberAdapter>> onLeftClick,
+			Consumer<TwoDimensionalVariable<NumberAdapter>> onRightClick) {
 
 		grid.setHgap(2.0);
 		grid.setVgap(2.0);
@@ -120,7 +121,7 @@ public class NumberPanel {
 	 * @param twoDimensional 2次元座標を持つオブジェクト
 	 * @return 数字マス
 	 */
-	public Matrix.Item<NumberAdapter> getNumberNode(TwoDimensional twoDimensional) {
+	public TwoDimensionalVariable<NumberAdapter> getNumberNode(TwoDimensional twoDimensional) {
 		return numbers.get(twoDimensional);
 	}
 
@@ -131,7 +132,7 @@ public class NumberPanel {
 	 * @return このオブジェクト自身
 	 */
 	public NumberPanel setNumberDisable(boolean disable) {
-		numbers.flat().map(Matrix.Item::getValue).forEach(adapter -> adapter.setDisable(disable));
+		numbers.flat().map(TwoDimensionalVariable::getValue).forEach(adapter -> adapter.setDisable(disable));
 		return this;
 	}
 
@@ -235,8 +236,8 @@ public class NumberPanel {
 	private Button createNumberButton(
 			int x,
 			int y,
-			Consumer<Matrix.Item<NumberAdapter>> onLeftClick,
-			Consumer<Matrix.Item<NumberAdapter>> onRightClick) {
+			Consumer<TwoDimensionalVariable<NumberAdapter>> onLeftClick,
+			Consumer<TwoDimensionalVariable<NumberAdapter>> onRightClick) {
 
 		Button button = new Button();
 		button.setPadding(new Insets(0.0));
