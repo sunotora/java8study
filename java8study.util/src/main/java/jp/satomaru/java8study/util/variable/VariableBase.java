@@ -1,17 +1,20 @@
-package jp.satomaru.java8study.util;
+package jp.satomaru.java8study.util.variable;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
- * 値を保持します。
+ * 変数の基底クラスです。
  *
- * @param <T> 値の型
+ * @param <T> 保持する値
  * @param <S> サブクラス
  */
-public abstract class Variable<T, S extends Variable<T, S>> {
+public abstract class VariableBase<T, S extends VariableBase<T, S>> {
 
 	/** 値。 */
 	private Optional<T> valueOptional = Optional.empty();
@@ -74,9 +77,35 @@ public abstract class Variable<T, S extends Variable<T, S>> {
 	 * @param other 設定する値を保持しているVariable
 	 * @return このオブジェクト自身
 	 */
-	public final S setValue(Variable<? extends T, ?> other) {
+	public final S setValue(VariableBase<? extends T, ?> other) {
 		valueOptional = Optional.ofNullable(other.getValue());
 		return self();
+	}
+
+	/**
+	 * 値を設定します。
+	 * 
+	 * @param action 現在の値を受け取り、設定する値を返す関数。
+	 * @return このオブジェクト自身
+	 * @throws NoSuchElementException 現在の値がnullの場合
+	 */
+	public final S setValue(UnaryOperator<T> action) {
+		return setValue(action.apply(valueOptional.get()));
+	}
+
+	/**
+	 * 値を設定します。
+	 * 
+	 * @param other 相手のVariable
+	 * @param action 自身および相手の現在の値を受け取り、設定する値を返す関数。
+	 * @return このオブジェクト自身
+	 * @throws NoSuchElementException 自身または相手の現在の値がnullの場合
+	 */
+	public final S setValue(VariableBase<? extends T, ?> other, BinaryOperator<T> action) {
+		return setValue(
+				action.apply(
+						valueOptional.orElseThrow(() -> new NoSuchElementException("my value")),
+						other.valueOptional.orElseThrow(() -> new NoSuchElementException("other's value"))));
 	}
 
 	/**
@@ -95,7 +124,7 @@ public abstract class Variable<T, S extends Variable<T, S>> {
 	 * @param other 比較する値
 	 * @return 値が等しい場合はtrue
 	 */
-	public final boolean isSameValue(Variable<?, ?> other) {
+	public final boolean isSameValue(VariableBase<?, ?> other) {
 		return isSameValue(other.getValue());
 	}
 
@@ -106,7 +135,7 @@ public abstract class Variable<T, S extends Variable<T, S>> {
 	 * @param valueConverter 引数の値を変換する関数（値がnullの場合は使用されない）
 	 * @return 値が等しい場合はtrue
 	 */
-	public final <U> boolean isSameValue(Variable<U, ?> other, Function<U, T> valueConverter) {
+	public final <U> boolean isSameValue(VariableBase<U, ?> other, Function<U, T> valueConverter) {
 		return isSameValue(other.optional().map(valueConverter).orElse(null));
 	}
 
@@ -126,7 +155,7 @@ public abstract class Variable<T, S extends Variable<T, S>> {
 	 * @param other 比較する値
 	 * @return 値が異なる場合はtrue
 	 */
-	public final boolean isNotSameValue(Variable<?, ?> other) {
+	public final boolean isNotSameValue(VariableBase<?, ?> other) {
 		return !isSameValue(other);
 	}
 
@@ -137,7 +166,7 @@ public abstract class Variable<T, S extends Variable<T, S>> {
 	 * @param valueConverter 引数の値を変換する関数（値がnullの場合は使用されない）
 	 * @return 値が異なる場合はtrue
 	 */
-	public final <U> boolean isNotSameValue(Variable<U, ?> item, Function<U, T> valueConverter) {
+	public final <U> boolean isNotSameValue(VariableBase<U, ?> item, Function<U, T> valueConverter) {
 		return !isSameValue(item, valueConverter);
 	}
 

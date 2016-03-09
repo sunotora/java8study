@@ -14,8 +14,10 @@ import jp.satomaru.java8study.mastermind.core.NumberPanel;
 import jp.satomaru.java8study.mastermind.core.NumberPanel.NumberAdapter;
 import jp.satomaru.java8study.util.IntegerMatrix;
 import jp.satomaru.java8study.util.Lottery;
-import jp.satomaru.java8study.util.Matrix;
-import jp.satomaru.java8study.util.Matrix.Item;
+import jp.satomaru.java8study.util.MatrixBase;
+import jp.satomaru.java8study.util.variable.TwoDimensionalInteger;
+import jp.satomaru.java8study.util.variable.TwoDimensionalVariable;
+import jp.satomaru.java8study.util.variable.VariableBase;
 
 /**
  * ヒントを元に、3x3マスの数字を当てるゲームです。
@@ -62,10 +64,10 @@ public class MasterMind extends Application {
 	private ButtonPanel buttonPanel;
 
 	/** 正解。 */
-	private Matrix<Integer> correctMatrix = new IntegerMatrix(MATRIX_WIDTH, MATRIX_HEIGHT);
+	private MatrixBase<Integer, TwoDimensionalInteger> correctMatrix = new IntegerMatrix(MATRIX_WIDTH, MATRIX_HEIGHT);
 
 	/** 解答。 */
-	private Matrix<Integer> answerMatrix = new IntegerMatrix(MATRIX_WIDTH, MATRIX_HEIGHT);
+	private MatrixBase<Integer, TwoDimensionalInteger> answerMatrix = new IntegerMatrix(MATRIX_WIDTH, MATRIX_HEIGHT);
 
 	/** 現在使用されていない数字。 */
 	private TreeSet<Integer> remains = new TreeSet<Integer>();
@@ -125,7 +127,7 @@ public class MasterMind extends Application {
 	 */
 	private void onDecide() {
 
-		if (answerMatrix.flat().anyMatch(Item::isNull)) {
+		if (answerMatrix.flat().anyMatch(VariableBase::isNull)) {
 			// 解答不完全
 			alert(AlertType.WARNING, "空欄のままの数字があります。", "全ての数字を設定してください。");
 			return;
@@ -217,7 +219,7 @@ public class MasterMind extends Application {
 	 *
 	 * @param item クリックされた数字マス
 	 */
-	private void onNumberLeftClick(Matrix.Item<NumberAdapter> item) {
+	private void onNumberLeftClick(TwoDimensionalVariable<NumberAdapter> item) {
 
 		if (remains.isEmpty()) {
 			// remainsが空の時は何もしない
@@ -225,46 +227,27 @@ public class MasterMind extends Application {
 		}
 
 		// 現在設定されている値を取得
-		Item<Integer> currentAnswer = answerMatrix.get(item);
+		TwoDimensionalInteger currentAnswer = answerMatrix.get(item);
 
-		// 選択数字マスの次の値を取得
-		Integer nextInteger = getNextRemains(currentAnswer.getValue());
+		Integer nextInteger = null;
 
-		// 現在設定されている解答値・GUI表示を更新
+		if (!currentAnswer.isNull()) {
+			// 現在の解答が設定されていた場合、未使用数字へ追加・より大きい値を取得
+			remains.add(currentAnswer.getValue());
+			nextInteger = remains.higher(currentAnswer.getValue());
+		}
+
+		if (nextInteger == null) {
+			// 次の設定値が取得できていない場合は、未使用数字の先頭を取得
+			nextInteger = remains.first();
+		}
+
+		// 解答マトリックスとGUIに設定
 		currentAnswer.setValue(nextInteger);
 		item.getValue().setNumber(nextInteger);
+		// 未使用数字から設定値をクリア
+		remains.remove(nextInteger);
 	}
-
-	/**
-	 * remainsから次の値を取得します。
-	 *	valueがnullだったらfirstを返します。
-	 *	valueがnullでなかったらhigherを返します。
-	 *	higherが取得できなければfirstを返します。
-	 *	現在使用していない数字の整合性を保ちます。
-	 * @param value
-	 * @return
-	 */
-	private Integer getNextRemains(Integer value) {
-
-		if (value == null) {
-			// firstを取得し、未使用数字から除去
-			Integer first = remains.first();
-			remains.remove(first);
-			return first;
-		}
-
-		// 次の値を取得
-		Integer next = remains.higher(value);
-		if (next == null) {
-			next = remains.first();
-		}
-
-		// 使用されていない数字の入れ替え
-		remains.add(value);
-		remains.remove(next);
-
-		return next;
-	};
 
 	/**
 	 * 数字マトリクスが右クリックされた時の処理を行います。
@@ -278,9 +261,9 @@ public class MasterMind extends Application {
 	 *
 	 * @param item クリックされた数字マス
 	 */
-	private void onNumberRightClick(Matrix.Item<NumberAdapter> item) {
+	private void onNumberRightClick(TwoDimensionalVariable<NumberAdapter> item) {
 
-		Item<Integer> selectedItem = answerMatrix.get(item);
+		TwoDimensionalInteger selectedItem = answerMatrix.get(item);
 
 		if (!selectedItem.isNull()) {
 
