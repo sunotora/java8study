@@ -25,11 +25,10 @@ public class ZunDokoKiyoshi {
 
 	public static void execute(Consumer<Word> acceptor) {
 		int zunChain = 0;
-		Word word = null;
 		boolean finish = false;
 
 		do {
-			word = (Math.random() < 0.5) ? Word.ZUN : Word.DOKO;
+			Word word = (Math.random() < 0.5) ? Word.ZUN : Word.DOKO;
 			acceptor.accept(word);
 
 			if (word.equals(Word.ZUN)) {
