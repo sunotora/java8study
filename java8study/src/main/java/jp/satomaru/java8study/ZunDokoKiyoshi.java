@@ -29,7 +29,7 @@ public class ZunDokoKiyoshi {
 		boolean finish = false;
 
 		do {
-			word = (Math.random() > 0.5) ? Word.ZUN : Word.DOKO;
+			word = (Math.random() < 0.5) ? Word.ZUN : Word.DOKO;
 			acceptor.accept(word);
 
 			if (word.equals(Word.ZUN)) {
