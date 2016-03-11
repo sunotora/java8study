@@ -34,11 +34,12 @@ public class ZunDokoKiyoshi {
 			if (word.equals(Word.ZUN)) {
 				++zunChain;
 			} else if (zunChain >= ZUN_CHAIN_WHEN_FINISH) {
-				acceptor.accept(Word.KIYOSHI);
 				finish = true;
 			} else {
 				zunChain = 0;
 			}
 		} while (!finish);
+
+		acceptor.accept(Word.KIYOSHI);
 	}
 }
