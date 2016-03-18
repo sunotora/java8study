@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import jp.satomaru.java8study.mastermind.core.ButtonPanel;
 import jp.satomaru.java8study.mastermind.core.NumberPanel;
 import jp.satomaru.java8study.mastermind.core.NumberPanel.NumberAdapter;
+import jp.satomaru.java8study.util.IntegerLine;
 import jp.satomaru.java8study.util.IntegerMatrix;
 import jp.satomaru.java8study.util.Lottery;
 import jp.satomaru.java8study.util.MatrixBase;
@@ -133,10 +134,43 @@ public class MasterMind extends Application {
 			return;
 		}
 
-		// TODO 解答と正解の比較、ヒットブローの割り出し、GUI表示
-		// 考え中です。お待ちください。
 
-		if (true) {
+		// HITの算出
+		IntegerLine hHits = new IntegerLine(MATRIX_HEIGHT, 0);
+		IntegerLine vHits = new IntegerLine(MATRIX_WIDTH, 0);
+
+		answerMatrix.flat()
+			.filter(answer -> correctMatrix.get(answer).isSameValue(answer))   // 座標と正解が一致するものを選択
+			.forEach(answer -> {
+				hHits.get(answer.getY()).increment();                          // 該当箇所をインクリメント
+				vHits.get(answer.getX()).increment();
+			});
+
+		// HITの設定
+		hHits.stream().forEach(item -> numberPanel.setRowHit(item.getIndex(), item.getValue()));
+		vHits.stream().forEach(item -> numberPanel.setColHit(item.getIndex(), item.getValue()));
+
+		// BLOWの算出
+		IntegerLine hBlows = new IntegerLine(MATRIX_HEIGHT, 0);
+		IntegerLine vBlows = new IntegerLine(MATRIX_WIDTH, 0);
+
+		answerMatrix.flat()
+			.forEach(answer -> {
+				correctMatrix.row(answer.getY())
+					.filter(hoge -> answer.isNotSamePosition(hoge) && answer.isSameValue(hoge)) // 座標が異なり、正解が一致する縦列を選択
+					.forEach(piyo -> hBlows.get(piyo.getY()).increment());                      // 該当箇所をインクリメント
+
+				correctMatrix.col(answer.getX())
+					.filter(hoge -> answer.isNotSamePosition(hoge) && answer.isSameValue(hoge)) // 座標が異なり、正解が一致する横列を選択
+					.forEach(piyo -> vBlows.get(piyo.getX()).increment());                      // 該当箇所をインクリメント
+			});
+
+		// BLOWの設定
+		hBlows.stream().forEach(item -> numberPanel.setRowBlow(item.getIndex(), item.getValue()));
+		vBlows.stream().forEach(item -> numberPanel.setColBlow(item.getIndex(), item.getValue()));
+
+		// 全問正解
+		if (hHits.values().allMatch(value -> value == MATRIX_WIDTH)) {
 			// 全問正解
 			alert(AlertType.INFORMATION, "おめでとうございます。", "全問正解です。");
 			numberPanel.setNumberDisable(true);
