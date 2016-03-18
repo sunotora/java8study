@@ -157,12 +157,12 @@ public class MasterMind extends Application {
 		answerMatrix.flat()
 			.forEach(answer -> {
 				correctMatrix.row(answer.getY())
-					.filter(hoge -> answer.isNotSamePosition(hoge) && answer.isSameValue(hoge)) // 座標が異なり、正解が一致する縦列を選択
-					.forEach(piyo -> hBlows.get(piyo.getY()).increment());                      // 該当箇所をインクリメント
+					.filter(rowCorrect -> answer.isNotSamePosition(rowCorrect) && answer.isSameValue(rowCorrect)) // 座標が異なり、正解が一致する縦列を選択
+					.forEach(rowCorrect -> hBlows.get(rowCorrect.getY()).increment());                            // 該当箇所をインクリメント
 
 				correctMatrix.col(answer.getX())
-					.filter(hoge -> answer.isNotSamePosition(hoge) && answer.isSameValue(hoge)) // 座標が異なり、正解が一致する横列を選択
-					.forEach(piyo -> vBlows.get(piyo.getX()).increment());                      // 該当箇所をインクリメント
+					.filter(colCorrect -> answer.isNotSamePosition(colCorrect) && answer.isSameValue(colCorrect)) // 座標が異なり、正解が一致する横列を選択
+					.forEach(colCorrect -> vBlows.get(colCorrect.getX()).increment());                            // 該当箇所をインクリメント
 			});
 
 		// BLOWの設定
