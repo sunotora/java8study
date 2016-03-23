@@ -46,7 +46,7 @@ public abstract class LineBase<T, E extends VariableBase<T, E> & Indexed> {
 		elements = IntStream.range(0, size)
 			.mapToObj(indexToValue)
 			.collect(Collectors.collectingAndThen(
-				Collectors.toMap(Indexed::getIndex, element -> element),
+				Collectors.toMap(element -> element.getIndex(), element -> element),
 				Collections::unmodifiableMap));
 	}
 
