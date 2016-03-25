@@ -192,6 +192,16 @@ public abstract class VariableBase<T, S extends VariableBase<T, S>> {
 	}
 
 	/**
+	 * 文字列表現を取得します。
+	 * 
+	 * @return 保持する値の文字列表現（nullの場合は"null"）
+	 */
+	@Override
+	public String toString() {
+		return valueOptional.map(Object::toString).orElse("null");
+	}
+
+	/**
 	 * このオブジェクト自身を返却してください。
 	 * 
 	 * @return このオブジェクト自身
