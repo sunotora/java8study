@@ -155,14 +155,17 @@ public class MasterMind extends Application {
 		IntegerLine vBlows = new IntegerLine(MATRIX_WIDTH, 0);
 
 		answerMatrix.flat()
+			.filter(answer -> correctMatrix.get(answer).isNotSameValue(answer))          // 座標と正解が一致していないマスを選択
 			.forEach(answer -> {
 				correctMatrix.row(answer.getY())
-					.filter(rowCorrect -> answer.isNotSamePosition(rowCorrect) && answer.isSameValue(rowCorrect)) // 座標が異なり、正解が一致する縦列を選択
-					.forEach(rowCorrect -> hBlows.get(rowCorrect.getY()).increment());                            // 該当箇所をインクリメント
+					.filter(rowCorrect -> answer.isSameValue(rowCorrect))                // 行の中に正解が存在することを検査
+					.findAny()                                                           // 1つでも存在する場合は、その内のどれか1つを取得
+					.ifPresent(rowCorrect -> hBlows.get(rowCorrect.getY()).increment()); // 取得したマスの行に対応するブローを増加
 
 				correctMatrix.col(answer.getX())
-					.filter(colCorrect -> answer.isNotSamePosition(colCorrect) && answer.isSameValue(colCorrect)) // 座標が異なり、正解が一致する横列を選択
-					.forEach(colCorrect -> vBlows.get(colCorrect.getX()).increment());                            // 該当箇所をインクリメント
+					.filter(colCorrect -> answer.isSameValue(colCorrect))                // 列の中に正解が存在することを検査
+					.findAny()                                                           // 1つでも存在する場合は、その内のどれか1つを取得
+					.ifPresent(colCorrect -> vBlows.get(colCorrect.getX()).increment()); // 取得したマスの列に対応するブローを増加
 			});
 
 		// BLOWの設定

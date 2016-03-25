@@ -37,7 +37,7 @@ public interface TwoDimensional {
 	 * @return 座標が等しい場合はtrue
 	 */
 	default boolean isSamePosition(TwoDimensional other) {
-		return getX() == other.getX() && getY() == other.getX();
+		return getX() == other.getX() && getY() == other.getY();
 	}
 
 	/**
