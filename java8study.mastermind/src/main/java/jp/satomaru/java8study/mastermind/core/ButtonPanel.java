@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 /**
  * ボタン群のパネルです。
  */
+@SuppressWarnings("restriction")
 public class ButtonPanel {
 
 	/** JavaFXアンカーペイン。 */

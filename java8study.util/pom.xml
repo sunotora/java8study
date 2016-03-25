@@ -22,6 +22,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
+					<fork>true</fork>
+					<compilerVersion>${java.version}</compilerVersion>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 				</configuration>

@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * 数字マトリクスのパネルです。
  */
+@SuppressWarnings("restriction")
 public class NumberPanel {
 
 	/** 数字マスへのアクセスを提供します。 */

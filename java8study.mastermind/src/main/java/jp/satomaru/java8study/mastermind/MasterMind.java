@@ -38,6 +38,7 @@ import jp.satomaru.java8study.util.variable.VariableBase;
  * 降参する時は降参ボタン、最初からやり直す時はリセットボタンを押下してください。
  * </p>
  */
+@SuppressWarnings("restriction")
 public class MasterMind extends Application {
 
 	/** タイトル。 */
