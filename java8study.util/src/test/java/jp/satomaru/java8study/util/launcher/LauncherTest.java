@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.util.stream.Stream;
 
 import jp.satomaru.java8study.util.Numbers;
-import jp.satomaru.java8study.util.Strings;
 import jp.satomaru.java8study.util.launcher.message.Message;
 import jp.satomaru.java8study.util.launcher.message.StringsRequest;
 import jp.satomaru.java8study.util.launcher.message.SysoutResponse;
@@ -46,8 +45,7 @@ public class LauncherTest {
 					.end();
 
 			BigDecimal result = first.divide(second, 16, RoundingMode.HALF_UP).stripTrailingZeros();
-			String text = Strings.rightSuppress(result.toPlainString(), "0");
-			message.outputAndClose(text);
+			message.outputAndClose(result);
 		}
 
 		public void whenNoCommand(Message message) {
