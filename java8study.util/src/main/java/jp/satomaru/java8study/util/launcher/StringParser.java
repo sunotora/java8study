@@ -1,4 +1,4 @@
-package jp.satomaru.java8study.util;
+package jp.satomaru.java8study.util.launcher;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

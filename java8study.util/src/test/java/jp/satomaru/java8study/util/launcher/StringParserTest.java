@@ -1,4 +1,4 @@
-package jp.satomaru.java8study.util;
+package jp.satomaru.java8study.util.launcher;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
