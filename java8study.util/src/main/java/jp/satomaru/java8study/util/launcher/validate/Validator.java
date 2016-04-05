@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -16,7 +17,7 @@ import lombok.RequiredArgsConstructor;
  * @param <K> 対象となる引数のキー
  * @param <V> 対象となる引数の型
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Validator<K, V> {
 
 	/**

@@ -3,7 +3,7 @@ package jp.satomaru.java8study.util.launcher.message;
 import java.util.Optional;
 
 /**
- * モデルへの要求です。
+ * 実行するオブジェクトへの要求です。
  */
 public interface Request {
 

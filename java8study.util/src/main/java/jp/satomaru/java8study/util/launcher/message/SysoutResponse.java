@@ -4,7 +4,7 @@ import jp.satomaru.java8study.util.launcher.validate.InvalidArgument;
 import jp.satomaru.java8study.util.launcher.validate.InvalidParameter;
 
 /**
- * モデルからの応答を標準出力に出力します。
+ * 実行するオブジェクトからの応答を、標準出力に出力します。
  */
 public class SysoutResponse implements Response {
 

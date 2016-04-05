@@ -14,7 +14,7 @@ import jp.satomaru.java8study.util.launcher.StringParser;
 import lombok.Getter;
 
 /**
- * main関数の引数から作成する、モデルへの要求です。
+ * main関数の引数から作成する、実行するオブジェクトへの要求です。
  */
 public class StringsRequest implements Request {
 

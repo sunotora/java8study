@@ -15,8 +15,16 @@ import jp.satomaru.java8study.util.launcher.validate.Validator;
 
 public class LauncherTest {
 
-	public static class Model {
+	public interface Model {
+		void add(Message message);
+		void sub(Message message);
+		void mul(Message message);
+		void div(Message message);
+	}
 
+	public static class ModelImpl implements Model, ErrorHandler {
+
+		@Override
 		public void add(Message message) {
 			BigDecimal first = validateFirst(message).end();
 			BigDecimal second = validateSecond(message).end();
@@ -24,6 +32,7 @@ public class LauncherTest {
 			message.outputAndClose(result);
 		}
 
+		@Override
 		public void sub(Message message) {
 			BigDecimal first = validateFirst(message).end();
 			BigDecimal second = validateSecond(message).end();
@@ -31,6 +40,7 @@ public class LauncherTest {
 			message.outputAndClose(result);
 		}
 
+		@Override
 		public void mul(Message message) {
 			BigDecimal first = validateFirst(message).end();
 			BigDecimal second = validateSecond(message).end();
@@ -38,6 +48,7 @@ public class LauncherTest {
 			message.outputAndClose(result);
 		}
 
+		@Override
 		public void div(Message message) {
 			BigDecimal first = validateFirst(message).end();
 			BigDecimal second = validateSecond(message)
@@ -48,22 +59,27 @@ public class LauncherTest {
 			message.outputAndClose(result);
 		}
 
+		@Override
 		public void whenNoCommand(Message message) {
 			message.outputAndClose("引数を指定してください。");
 		}
 
+		@Override
 		public void whenIllegalCommand(Message message, String command) {
 			message.outputAndClose(String.format("演算の指定が誤っています:%s", command));
 		}
 
+		@Override
 		public void whenInvalidArgument(Message message, InvalidArgument invalid) {
 			message.errorAndClose(invalid);
 		}
 
+		@Override
 		public void whenInvalidParameter(Message message, InvalidParameter invalid) {
 			message.errorAndClose(invalid);
 		}
 
+		@Override
 		public void whenError(Message message) {
 			message.response(response ->
 				Stream.of(
@@ -93,19 +109,14 @@ public class LauncherTest {
 		}
 	}
 
-	private static Launcher<Model> launcher = Launcher.of(Model.class)
+	private static final Launcher<Model> launcher = Launcher.of(Model.class)
 		.setCommand("add", Model::add)
 		.setCommand("sub", Model::sub)
 		.setCommand("mul", Model::mul)
 		.setCommand("div", Model::div)
-		.whenNoCommand(Model::whenNoCommand)
-		.whenIllegalCommand(Model::whenIllegalCommand)
-		.whenInvalidArgument(Model::whenInvalidArgument)
-		.whenInvalidParameter(Model::whenInvalidParameter)
-		.whenError(Model::whenError)
 		.ready();
 
 	public static void main(String[] args) {
-		launcher.launch(new Model(), new StringsRequest(args), new SysoutResponse());
+		launcher.launch(new ModelImpl(), new StringsRequest(args), new SysoutResponse());
 	}
 }

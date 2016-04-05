@@ -4,7 +4,7 @@ import jp.satomaru.java8study.util.launcher.validate.InvalidArgument;
 import jp.satomaru.java8study.util.launcher.validate.InvalidParameter;
 
 /**
- * モデルからの応答です。
+ * 実行するオブジェクトからの応答です。
  */
 public interface Response extends AutoCloseable {
 
