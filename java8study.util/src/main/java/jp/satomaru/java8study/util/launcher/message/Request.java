@@ -17,6 +17,7 @@ public interface Request {
 	/**
 	 * インデックスに関連付けられた引数を取得します。
 	 * 
+	 * @param <T> 引数の型
 	 * @param index 引数のインデックス
 	 * @param type 引数の型
 	 * @return 引数
@@ -26,6 +27,7 @@ public interface Request {
 	/**
 	 * 名前に関連付けられた引数を取得します。
 	 * 
+	 * @param <T> 引数の型
 	 * @param name 引数の名前
 	 * @param type 引数の型
 	 * @return 引数

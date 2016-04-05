@@ -159,6 +159,7 @@ public class Launcher<T> {
 	/**
 	 * 設定を開始します。
 	 * 
+	 * @param <T> 実行するオブジェクトの型
 	 * @param type 実行するオブジェクトのクラス
 	 * @return コンフィグ
 	 */
@@ -189,6 +190,7 @@ public class Launcher<T> {
 	 * 
 	 * @param model 実行するオブジェクト
 	 * @param request リクエスト
+	 * @param response レスポンス
 	 */
 	public void launch(T model, Request request, Response response) {
 		Message message = new Message(request, response);
@@ -254,6 +256,7 @@ public class Launcher<T> {
 	 * そうでない場合は、ランチャーに設定されているハンドラーを実行します。
 	 * </p>
 	 * 
+	 * @param <U> 引数の型
 	 * @param model 実行するオブジェクト
 	 * @param message メッセージ
 	 * @param argument 引数

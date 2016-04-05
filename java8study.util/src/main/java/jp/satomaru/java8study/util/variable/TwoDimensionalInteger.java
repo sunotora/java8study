@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * 2次元座標を割り振られた整数の変数です。
- *
- * @param <T> 保持する値
  */
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = {"x", "y"}, callSuper = false)

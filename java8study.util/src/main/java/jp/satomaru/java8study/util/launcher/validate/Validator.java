@@ -23,6 +23,7 @@ public class Validator<K, V> {
 	/**
 	 * インデックスに関連付けられた引数のバリデーションを開始します。
 	 * 
+	 * @param <V> 引数の型
 	 * @param index 引数のインデックス
 	 * @param type 引数の型
 	 * @return バリデーター
@@ -38,6 +39,7 @@ public class Validator<K, V> {
 	/**
 	 * 名前に関連付けられた引数のバリデーションを開始します。
 	 * 
+	 * @param <V> 引数の型
 	 * @param name 引数の名前
 	 * @param type 引数の型
 	 * @return バリデーター
@@ -108,8 +110,8 @@ public class Validator<K, V> {
 	 * 
 	 * <p>
 	 * getterには{@code Request::get}を指定してください。
-	 * これは、{@link jp.satomaru.java8study.util.launcher.message.Request#get(Class, int) Request#get(Class, int)}、
-	 * あるいは{@link jp.satomaru.java8study.util.launcher.message.Request#get(Class, String) Request#get(Class, String)}を指します。
+	 * これは、{@link jp.satomaru.java8study.util.launcher.message.Request#get(int, Class) Request#get(int, Class)}、
+	 * あるいは{@link jp.satomaru.java8study.util.launcher.message.Request#get(String, Class) Request#get(String, Class)}を指します。
 	 * </p>
 	 * 
 	 * <p>

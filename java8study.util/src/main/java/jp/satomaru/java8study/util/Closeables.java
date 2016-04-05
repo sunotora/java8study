@@ -19,6 +19,7 @@ public final class Closeables {
 	 * 対象がCloseableでない場合、クローズは呼び出しません。
 	 * </p>
 	 * 
+	 * @param <T> 対象の型
 	 * @param target 対象
 	 * @param action 対象を実行する関数
 	 * @throws Exception 例外が発生した場合
@@ -40,6 +41,7 @@ public final class Closeables {
 	 * 例外が発生した場合は、実行時例外でラッピングして送出します。
 	 * </p>
 	 * 
+	 * @param <T> 対象の型
 	 * @param target 対象
 	 * @param action 対象を実行する関数
 	 */
@@ -58,9 +60,10 @@ public final class Closeables {
 	 * 例外が発生した場合は、送出せずに戻り値として返却します。
 	 * </p>
 	 * 
-	 * @param target
-	 * @param action
-	 * @return
+	 * @param <T> 対象の型
+	 * @param target 対象
+	 * @param action 対象を実行する関数
+	 * @return 発生した例外
 	 */
 	public static <T> Optional<Exception> autoCloseSilently(T target, Consumer<T> action) {
 		try {

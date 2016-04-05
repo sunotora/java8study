@@ -72,7 +72,7 @@ public abstract class LineBase<T, E extends VariableBase<T, E> & Indexed> {
 	/**
 	 * 指定されたオブジェクトとインデックス番号が等しい配列要素を取得します。
 	 * 
-	 * @param index インデックス番号
+	 * @param indexed インデックス番号を持つオブジェクト
 	 * @return 配列要素
 	 */
 	public final Optional<E> optional(Indexed indexed) {

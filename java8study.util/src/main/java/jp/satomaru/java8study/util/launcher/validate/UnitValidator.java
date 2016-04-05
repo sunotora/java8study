@@ -37,7 +37,7 @@ public class UnitValidator<K, V> {
 	 * 
 	 * @param unexpected 引数が妥当でないことを判定する関数
 	 * @param messageSupplier 引数が妥当でない場合に送出されるバリデーション例外のメッセージを作成する関数
-	 * @return
+	 * @return このオブジェクト自身
 	 */
 	public UnitValidator<K, V> when(Predicate<V> unexpected, Supplier<String> messageSupplier) {
 		optional.ifPresent(value -> {
