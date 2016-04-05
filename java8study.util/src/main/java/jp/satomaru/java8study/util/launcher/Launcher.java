@@ -191,32 +191,33 @@ public class Launcher<T> {
 	 * @param model 実行するオブジェクト
 	 * @param request リクエスト
 	 * @param response レスポンス
+	 * @throws Exception レスポンスのクローズに失敗した場合
 	 */
-	public void launch(T model, Request request, Response response) {
-		Message message = new Message(request, response);
+	public void launch(T model, Request request, Response response) throws Exception {
+		try (Message message = new Message(request, response)) {
+			if (!request.getCommand().isPresent()) {
+				handle(model, message, ErrorHandler::whenNoCommand, whenNoCommand);
+				handle(model, message, ErrorHandler::whenError, whenError);
+				return;
+			}
 
-		if (!request.getCommand().isPresent()) {
-			handle(model, message, ErrorHandler::whenNoCommand, whenNoCommand);
-			handle(model, message, ErrorHandler::whenError, whenError);
-			return;
-		}
+			String command = request.getCommand().get();
 
-		String command = request.getCommand().get();
+			if (!commandMap.containsKey(command)) {
+				handle(model, message, command, ErrorHandler::whenIllegalCommand, whenIllegalCommand);
+				handle(model, message, ErrorHandler::whenError, whenError);
+				return;
+			}
 
-		if (!commandMap.containsKey(command)) {
-			handle(model, message, command, ErrorHandler::whenIllegalCommand, whenIllegalCommand);
-			handle(model, message, ErrorHandler::whenError, whenError);
-			return;
-		}
-
-		try {
-			commandMap.get(command).accept(model, message);
-		} catch (InvalidArgument e) {
-			handle(model, message, e, ErrorHandler::whenInvalidArgument, whenInvalidArgument);
-			handle(model, message, ErrorHandler::whenError, whenError);
-		} catch (InvalidParameter e) {
-			handle(model, message, e, ErrorHandler::whenInvalidParameter, whenInvalidParameter);
-			handle(model, message, ErrorHandler::whenError, whenError);
+			try {
+				commandMap.get(command).accept(model, message);
+			} catch (InvalidArgument e) {
+				handle(model, message, e, ErrorHandler::whenInvalidArgument, whenInvalidArgument);
+				handle(model, message, ErrorHandler::whenError, whenError);
+			} catch (InvalidParameter e) {
+				handle(model, message, e, ErrorHandler::whenInvalidParameter, whenInvalidParameter);
+				handle(model, message, ErrorHandler::whenError, whenError);
+			}
 		}
 	}
 

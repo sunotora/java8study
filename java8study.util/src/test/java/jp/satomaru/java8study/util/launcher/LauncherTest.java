@@ -29,7 +29,7 @@ public class LauncherTest {
 			BigDecimal first = validateFirst(message).end();
 			BigDecimal second = validateSecond(message).end();
 			BigDecimal result = first.add(second);
-			message.outputAndClose(result);
+			message.output(result);
 		}
 
 		@Override
@@ -37,7 +37,7 @@ public class LauncherTest {
 			BigDecimal first = validateFirst(message).end();
 			BigDecimal second = validateSecond(message).end();
 			BigDecimal result = first.subtract(second);
-			message.outputAndClose(result);
+			message.output(result);
 		}
 
 		@Override
@@ -45,7 +45,7 @@ public class LauncherTest {
 			BigDecimal first = validateFirst(message).end();
 			BigDecimal second = validateSecond(message).end();
 			BigDecimal result = first.multiply(second);
-			message.outputAndClose(result);
+			message.output(result);
 		}
 
 		@Override
@@ -56,27 +56,27 @@ public class LauncherTest {
 					.end();
 
 			BigDecimal result = first.divide(second, 16, RoundingMode.HALF_UP).stripTrailingZeros();
-			message.outputAndClose(result);
+			message.output(result);
 		}
 
 		@Override
 		public void whenNoCommand(Message message) {
-			message.outputAndClose("引数を指定してください。");
+			message.output("引数を指定してください。");
 		}
 
 		@Override
 		public void whenIllegalCommand(Message message, String command) {
-			message.outputAndClose(String.format("演算の指定が誤っています:%s", command));
+			message.output(String.format("演算の指定が誤っています:%s", command));
 		}
 
 		@Override
 		public void whenInvalidArgument(Message message, InvalidArgument invalid) {
-			message.errorAndClose(invalid);
+			message.error(invalid);
 		}
 
 		@Override
 		public void whenInvalidParameter(Message message, InvalidParameter invalid) {
-			message.errorAndClose(invalid);
+			message.error(invalid);
 		}
 
 		@Override
@@ -117,6 +117,10 @@ public class LauncherTest {
 		.ready();
 
 	public static void main(String[] args) {
-		launcher.launch(new ModelImpl(), new StringsRequest(args), new SysoutResponse());
+		try {
+			launcher.launch(new ModelImpl(), new StringsRequest(args), new SysoutResponse());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
