@@ -2,7 +2,7 @@
 
 <project default="javadoc">
 	<target name="javadoc">
-		<property name="lombokJar" value="" description="lombok.jarのフルパス"/>
+		<property name="lombokJar" value="C:/Users/menox/.m2/repository/org/projectlombok/lombok/1.16.6/lombok-1.16.6.jar" description="lombok.jarのフルパス"/>
 		<property name="destdir" value="doc" description="JavaDocを出力するディレクトリ"/>
 
 		<javadoc

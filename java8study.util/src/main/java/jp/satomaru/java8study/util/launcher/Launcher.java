@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import jp.satomaru.java8study.util.AlternativeInvoker;
 import jp.satomaru.java8study.util.TriConsumer;
 import jp.satomaru.java8study.util.launcher.message.Message;
 import jp.satomaru.java8study.util.launcher.message.Request;
@@ -191,90 +192,35 @@ public class Launcher<T> {
 	 * @param model 実行するオブジェクト
 	 * @param request リクエスト
 	 * @param response レスポンス
-	 * @throws Exception レスポンスのクローズに失敗した場合
+	 * @throws Exception オブジェクトの実行、またはレスポンスのクローズに失敗した場合
 	 */
 	public void launch(T model, Request request, Response response) throws Exception {
+		AlternativeInvoker<ErrorHandler> invoker = new AlternativeInvoker<>(ErrorHandler.class);
+
 		try (Message message = new Message(request, response)) {
 			if (!request.getCommand().isPresent()) {
-				handle(model, message, ErrorHandler::whenNoCommand, whenNoCommand);
-				handle(model, message, ErrorHandler::whenError, whenError);
+				invoker.ready(ErrorHandler::whenNoCommand, whenNoCommand).invoke(model, message);
+				invoker.ready(ErrorHandler::whenError, whenError).invoke(model, message);
 				return;
 			}
 
 			String command = request.getCommand().get();
 
 			if (!commandMap.containsKey(command)) {
-				handle(model, message, command, ErrorHandler::whenIllegalCommand, whenIllegalCommand);
-				handle(model, message, ErrorHandler::whenError, whenError);
+				invoker.ready(ErrorHandler::whenIllegalCommand, whenIllegalCommand).invoke(model, message, command);
+				invoker.ready(ErrorHandler::whenError, whenError).invoke(model, message);
 				return;
 			}
 
 			try {
 				commandMap.get(command).accept(model, message);
 			} catch (InvalidArgument e) {
-				handle(model, message, e, ErrorHandler::whenInvalidArgument, whenInvalidArgument);
-				handle(model, message, ErrorHandler::whenError, whenError);
+				invoker.ready(ErrorHandler::whenInvalidArgument, whenInvalidArgument).invoke(model, message, e);
+				invoker.ready(ErrorHandler::whenError, whenError).invoke(model, message);
 			} catch (InvalidParameter e) {
-				handle(model, message, e, ErrorHandler::whenInvalidParameter, whenInvalidParameter);
-				handle(model, message, ErrorHandler::whenError, whenError);
+				invoker.ready(ErrorHandler::whenInvalidParameter, whenInvalidParameter).invoke(model, message, e);
+				invoker.ready(ErrorHandler::whenError, whenError).invoke(model, message);
 			}
-		}
-	}
-
-	/**
-	 * エラ－ハンドリングを行います。
-	 * 
-	 * <p>
-	 * 実行するオブジェクトが{@link ErrorHandler}を実装している場合は、
-	 * 実行するオブジェクトに実装されているハンドラーを実行します。
-	 * そうでない場合は、ランチャーに設定されているハンドラーを実行します。
-	 * </p>
-	 * 
-	 * @param model 実行するオブジェクト
-	 * @param message メッセージ
-	 * @param action 実行するオブジェクトに実装されているハンドラー
-	 * @param defaultAction ランチャーに設定されているハンドラー
-	 */
-	private void handle(
-			T model,
-			Message message,
-			BiConsumer<ErrorHandler, Message> action,
-			BiConsumer<T, Message> defaultAction) {
-
-		if (model instanceof ErrorHandler) {
-			action.accept((ErrorHandler) model, message);
-		} else {
-			defaultAction.accept(model, message);
-		}
-	}
-
-	/**
-	 * エラ－ハンドリングを行います。
-	 * 
-	 * <p>
-	 * 実行するオブジェクトが{@link ErrorHandler}を実装している場合は、
-	 * 実行するオブジェクトに実装されているハンドラーを実行します。
-	 * そうでない場合は、ランチャーに設定されているハンドラーを実行します。
-	 * </p>
-	 * 
-	 * @param <U> 引数の型
-	 * @param model 実行するオブジェクト
-	 * @param message メッセージ
-	 * @param argument 引数
-	 * @param action 実行するオブジェクトに実装されているハンドラー
-	 * @param defaultAction ランチャーに設定されているハンドラー
-	 */
-	private <U> void handle(
-			T model,
-			Message message,
-			U argument,
-			TriConsumer<ErrorHandler, Message, U> action,
-			TriConsumer<T, Message, U> defaultAction) {
-
-		if (model instanceof ErrorHandler) {
-			action.accept((ErrorHandler) model, message, argument);
-		} else {
-			defaultAction.accept(model, message, argument);
 		}
 	}
 }

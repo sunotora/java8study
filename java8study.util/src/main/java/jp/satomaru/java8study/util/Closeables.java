@@ -4,12 +4,12 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * Closeableに関するユーティリティです。
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Closeables {
 
 	/**

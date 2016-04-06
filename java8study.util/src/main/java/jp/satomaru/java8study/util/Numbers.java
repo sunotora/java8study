@@ -3,12 +3,12 @@ package jp.satomaru.java8study.util;
 import java.math.BigDecimal;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * 数に関するユーティリティです。
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Numbers {
 
 	/**
