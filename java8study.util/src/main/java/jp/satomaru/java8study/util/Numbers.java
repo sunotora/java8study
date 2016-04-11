@@ -1,12 +1,14 @@
 package jp.satomaru.java8study.util;
 
+import java.math.BigDecimal;
+
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * 数に関するユーティリティです。
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Numbers {
 
 	/**
@@ -21,5 +23,15 @@ public final class Numbers {
 	 */
 	public static int randomInt(int maxExclusive) {
 		return (int) Math.floor(Math.random() * Args.of("maxExclusive", maxExclusive).min(0).get());
+	}
+
+	/**
+	 * 0であることを判定します。
+	 * 
+	 * @param decimal 判定対象
+	 * @return 0である場合はtrue
+	 */
+	public static boolean isZero(BigDecimal decimal) {
+		return decimal.compareTo(BigDecimal.ZERO) == 0;
 	}
 }

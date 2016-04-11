@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project default="javadoc">
+	<target name="javadoc">
+		<property name="lombokJar" value="C:/Users/menox/.m2/repository/org/projectlombok/lombok/1.16.6/lombok-1.16.6.jar" description="lombok.jarのフルパス"/>
+		<property name="destdir" value="doc" description="JavaDocを出力するディレクトリ"/>
+
+		<javadoc
+			access="private"
+			additionalparam="-encoding UTF-8 -charset UTF-8"
+			author="true"
+			classpath="${lombokJar}"
+			destdir="${destdir}"
+			nodeprecated="false"
+			nodeprecatedlist="false"
+			noindex="false"
+			nonavbar="false"
+			notree="false"
+			packagenames="
+				jp.satomaru.java8study.util,
+				jp.satomaru.java8study.util.variable,
+				jp.satomaru.java8study.util.launcher.message,
+				jp.satomaru.java8study.util.launcher.validate,
+				jp.satomaru.java8study.util.launcher"
+			source="1.8"
+			sourcepath="src/main/java"
+			splitindex="true"
+			use="true"
+			version="true"/>
+	</target>
+</project>

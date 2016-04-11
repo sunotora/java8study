@@ -131,6 +131,7 @@ public abstract class VariableBase<T, S extends VariableBase<T, S>> {
 	/**
 	 * 値が等しいことを判定します。
 	 * 
+	 * @param <U> 比較する値の型
 	 * @param other 比較する値
 	 * @param valueConverter 引数の値を変換する関数（値がnullの場合は使用されない）
 	 * @return 値が等しい場合はtrue
@@ -162,12 +163,13 @@ public abstract class VariableBase<T, S extends VariableBase<T, S>> {
 	/**
 	 * 値が異なることを判定します。
 	 * 
+	 * @param <U> 比較する値の型
 	 * @param other 比較する値
 	 * @param valueConverter 引数の値を変換する関数（値がnullの場合は使用されない）
 	 * @return 値が異なる場合はtrue
 	 */
-	public final <U> boolean isNotSameValue(VariableBase<U, ?> item, Function<U, T> valueConverter) {
-		return !isSameValue(item, valueConverter);
+	public final <U> boolean isNotSameValue(VariableBase<U, ?> other, Function<U, T> valueConverter) {
+		return !isSameValue(other, valueConverter);
 	}
 
 	/**
@@ -184,6 +186,7 @@ public abstract class VariableBase<T, S extends VariableBase<T, S>> {
 	/**
 	 * 値を処理します。
 	 * 
+	 * @param <R> 処理結果の型
 	 * @param action 値を処理する関数（値がnullの場合は実行されない）
 	 * @return 処理結果（値が処理されなかった場合はnull）
 	 */
