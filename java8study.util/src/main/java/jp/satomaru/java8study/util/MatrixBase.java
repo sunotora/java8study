@@ -223,7 +223,7 @@ public abstract class MatrixBase<T, E extends VariableBase<T, E> & TwoDimensiona
 	 *      17, 18, 19, 20
 	 *     入力が"7"の座標：返却ストリーム{2,3,4,6,8,10,11,12}
 	 *     入力が"1"の座標：返却ストリーム{2,5,6}
-	 *     入力が"20"の座標：返却ストリーム{15,16,20}
+	 *     入力が"20"の座標：返却ストリーム{15,16,19}
 	 * @param criteriaDimension 2次元座標を持つオブジェクト（基準）
 	 * @return 配列要素
 	 */
