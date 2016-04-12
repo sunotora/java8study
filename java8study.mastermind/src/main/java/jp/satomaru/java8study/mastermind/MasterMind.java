@@ -135,7 +135,6 @@ public class MasterMind extends Application {
 			return;
 		}
 
-
 		// HITの算出
 		IntegerLine hHits = new IntegerLine(MATRIX_HEIGHT, 0);
 		IntegerLine vHits = new IntegerLine(MATRIX_WIDTH, 0);
@@ -156,7 +155,7 @@ public class MasterMind extends Application {
 		IntegerLine vBlows = new IntegerLine(MATRIX_WIDTH, 0);
 
 		answerMatrix.flat()
-			.filter(answer -> correctMatrix.get(answer).isNotSameValue(answer))          // 座標と正解が一致していないマスを選択
+			.filter(answer -> correctMatrix.get(answer).isNotSameValue(answer))          // 座標と正解が一致していないマスを選択（HITで評価しなかったマスを取得）
 			.forEach(answer -> {
 				correctMatrix.row(answer.getY())
 					.filter(rowCorrect -> answer.isSameValue(rowCorrect))                // 行の中に正解が存在することを検査
