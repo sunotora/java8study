@@ -1,12 +1,10 @@
 package jp.co.satomaru.java8study.minesweeper.core;
 
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -100,23 +98,11 @@ public class ToolPanel {
 	}
 
 	/**
-	 * JavaFXノードをJavaFXグリッドペインに配置します。
-	 *
-	 * @param node JavaFXノード
-	 * @return 第1引数のJavaFXノード
+	 * 残地雷数を設定します。
+	 * @param remains
 	 */
-	private <T extends Node> T setAnchorNode(T node) {
-
-		VBox vBox = new VBox(node);
-		vBox.setPadding(new Insets(0.0, 0.0, 0.0, 16.0));
-		vBox.setSpacing(4.0);
-
-		anchor.getChildren().add(vBox);
-//		AnchorPane.setTopAnchor(vBox, 0.0);
-//		AnchorPane.setLeftAnchor(vBox, 0.0);
-
-		return node;
+	public void setRemainLandMinesText(int remains) {
+		remainLandMinesText.setText(String.valueOf(remains));
 	}
-
 
 }

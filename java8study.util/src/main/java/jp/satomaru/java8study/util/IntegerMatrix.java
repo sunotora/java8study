@@ -10,7 +10,7 @@ import jp.satomaru.java8study.util.variable.TwoDimensionalInteger;
 public class IntegerMatrix extends MatrixBase<Integer, TwoDimensionalInteger> {
 
 	/**
-	 * コンストラクタ。
+	 * コンストラクタ。r
 	 * 
 	 * <p>
 	 * 生成される要素の2次元座標は、

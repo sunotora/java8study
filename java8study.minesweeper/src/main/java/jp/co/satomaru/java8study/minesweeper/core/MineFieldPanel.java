@@ -33,12 +33,12 @@ public class MineFieldPanel {
 		private final Button button;
 
 		/**
-		 * 地雷原を設定します。
+		 * 地雷原マスを設定します。
 		 *
 		 * @param number 設定する地雷原
 		 * @return このオブジェクト自身
 		 */
-		public MineFieldAdapter setOutputStr(String str) {
+		public MineFieldAdapter setValue(String str) {
 			button.setText((str != null) ? str : null);
 			return this;
 		}
@@ -98,7 +98,7 @@ public class MineFieldPanel {
 	 * @param twoDimensional 2次元座標を持つオブジェクト
 	 * @return 地雷原マス
 	 */
-	public TwoDimensionalVariable<MineFieldAdapter> getNumberNode(TwoDimensional twoDimensional) {
+	public TwoDimensionalVariable<MineFieldAdapter> getMineFieldNode(TwoDimensional twoDimensional) {
 		return mineField.get(twoDimensional);
 	}
 
@@ -108,7 +108,7 @@ public class MineFieldPanel {
 	 * @param disable 非活性にする場合はtrue
 	 * @return このオブジェクト自身
 	 */
-	public MineFieldPanel setOutputStrDisable(boolean disable) {
+	public MineFieldPanel setMineFieldDisable(boolean disable) {
 		mineField.flat().map(TwoDimensionalVariable::getValue).forEach(adapter -> adapter.setDisable(disable));
 		return this;
 	}
