@@ -16,3 +16,6 @@
 
 ## java8study.mastermind
 数字あてゲームを作成する応用問題です。
+
+## java8study.minesweeper
+マインスイーパーを作成する応用問題です。
