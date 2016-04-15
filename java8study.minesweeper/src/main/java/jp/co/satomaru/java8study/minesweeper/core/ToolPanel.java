@@ -20,9 +20,6 @@ public class ToolPanel {
 	/** 時間テキスト */
 	private final Text timeText = createText("00:00");
 
-	/** 残地雷数 */
-	private int remainLandMines = 0;
-
 	/** 残地雷テキスト */
 	private final Text remainLandMinesText;
 
@@ -40,7 +37,6 @@ public class ToolPanel {
 		resetButton = createButton("R");
 		resetButton.setOnAction(event -> onReset.run());
 
-		remainLandMines = remainLandMinesNum;
 		remainLandMinesText = createText(String.valueOf(remainLandMinesNum));
 
 		HBox hBox = new HBox(timeText, resetButton, remainLandMinesText);
