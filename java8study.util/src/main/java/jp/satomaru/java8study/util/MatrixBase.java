@@ -227,8 +227,8 @@ public abstract class MatrixBase<T, E extends VariableBase<T, E> & TwoDimensiona
 	 * @param criteriaDimension 2次元座標を持つオブジェクト（基準）
 	 * @return 配列要素
 	 */
-	public final Stream<E> arround(TwoDimensional criteriaDimension) {
-		return arround(criteriaDimension.getX(), criteriaDimension.getY());
+	public final Stream<E> around(TwoDimensional criteriaDimension) {
+		return around(criteriaDimension.getX(), criteriaDimension.getY());
 	}
 
 	/**
@@ -237,8 +237,8 @@ public abstract class MatrixBase<T, E extends VariableBase<T, E> & TwoDimensiona
 	 * @param criteriaY 基準Y座標
 	 * @return 配列要素
 	 */
-	public final Stream<E> arround(int criteriaX, int criteriaY) {
-		return flat().filter(elem -> isArround(elem.getX(), elem.getY(), criteriaX, criteriaY));
+	public final Stream<E> around(int criteriaX, int criteriaY) {
+		return flat().filter(elem -> isAround(elem.getX(), elem.getY(), criteriaX, criteriaY));
 	}
 
 	private final int MIN_ARROUND_RANGE = -1;
@@ -251,8 +251,8 @@ public abstract class MatrixBase<T, E extends VariableBase<T, E> & TwoDimensiona
 	 * @param twoDimensional 指定された2次元座標を持つオブジェクト
 	 * @return
 	 */
-	private final boolean isArround(int x, int y, TwoDimensional twoDimensional) {
-		return isArround(x, y, twoDimensional.getX(), twoDimensional.getY());
+	private final boolean isAround(int x, int y, TwoDimensional twoDimensional) {
+		return isAround(x, y, twoDimensional.getX(), twoDimensional.getY());
 	}
 
 	/**
@@ -263,7 +263,7 @@ public abstract class MatrixBase<T, E extends VariableBase<T, E> & TwoDimensiona
 	 * @param criteriaY 指定されたオブジェクトのY座標
 	 * @return
 	 */
-	private final boolean isArround(int x, int y, int criteriaX, int criteriaY) {
+	private final boolean isAround(int x, int y, int criteriaX, int criteriaY) {
 		// 座標が同じ場合はfalse;
 		if (x == criteriaX && y == criteriaY) return false;
 

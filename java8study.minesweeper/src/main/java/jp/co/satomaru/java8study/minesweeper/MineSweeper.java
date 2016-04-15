@@ -60,21 +60,14 @@ public class MineSweeper extends Application {
 		launch(args);
 	}
 
-	/** 地雷原マトリクスのパネル */
-	private MineFieldPanel mineFieldPanel;
-
 	/** ツール群のパネル。 */
 	private ToolPanel toolPanel;
 
-	/** 地雷原マトリクス。 */
-	private Matrix<MineField> matrix = new Matrix<>(MATRIX_WIDTH, MATRIX_HEIGHT, (x, y) -> new MineField(MINE_FIELD_MASS.ZERO, MINE_FIELD_STATE.CLOSE));
+	/** 地雷原マトリクスのパネル。（ビュー） */
+	private MineFieldPanel mineFieldPanel;
 
-//
-//	/** 地雷原マトリクス。 */
-//	private Matrix<String> mineFieldMatrix = new Matrix<String>(MATRIX_WIDTH, MATRIX_HEIGHT, MINE_FIELD.ZERO.toString());
-//
-//	/** 地雷原状態マトリクス。 */
-//	private Matrix<String> mineFieldStateMatrix = new Matrix<String>(MATRIX_WIDTH, MATRIX_HEIGHT, MINE_FIELD_STATE.CLOSE.toString());
+	/** 地雷原マトリクス。（モデル） */
+	private Matrix<MineField> matrix = new Matrix<>(MATRIX_WIDTH, MATRIX_HEIGHT, (x, y) -> new MineField(MINE_FIELD_MASS.ZERO, MINE_FIELD_STATE.CLOSE));
 
 	/**
 	 * JavaFXアプリケーションを起動します。
@@ -173,16 +166,19 @@ public class MineSweeper extends Application {
 		// 周囲地雷数を選択されたマスに設定
 		mineFieldPanel.getMineFieldNode(targetItem).getValue().setValue(currentMass.toString());
 
-		// 0だったら回りも押下。（こなへんどうやってやろうかなぁ）
-		// TODO
-		// 周囲地雷数が0だった場合、周囲８マスをオープンにし、非活性とする。
-		// 何かしらの再帰処理が必要か？
-
 		// 押下したマスを非活性に変更
-		targetItem.getValue().setDisable(true);
+		mineFieldPanel.getMineFieldNode(targetItem).getValue().setDisable(true);
 
 		// 押下したマスの状態マトリックスをオープン状態に変更
-		matrix.get(targetItem).getValue().setState(MINE_FIELD_STATE.OPEN);;
+		currentField.setState(MINE_FIELD_STATE.OPEN);
+
+		// 0だったら回りも押下
+		if (currentMass.equals(MINE_FIELD_MASS.ZERO)) {
+			matrix.around(targetItem).forEach(this::openMassAroundZero);
+		}
+
+		// ツールパネル旗個数のリセット
+		resetRemainMines();
 
 		// 終了判定（地雷じゃない全てのマスがオープンだったら終了）
 		if (matrix.flat()
@@ -193,6 +189,39 @@ public class MineSweeper extends Application {
 			mineFieldPanel.setMineFieldDisable(true);
 
 			alert(AlertType.INFORMATION, "ユーザの勝ちです。", "GAME CLEAR!!!");
+		}
+	}
+
+	/**
+	 * 周囲地雷数0のマスの周りのマスをオープンする。
+	 * @param targetItem
+	 */
+	// FIXME 冗長なコードあり
+	public void openMassAroundZero (TwoDimensionalVariable<?> targetItem) {
+
+		// 選択された地雷原フィールドを取得
+		MineField currentField = matrix.get(targetItem).getValue();
+
+		MINE_FIELD_MASS currentMass = currentField.getMass();
+
+		// 既にオープンになっているマスは何もせずに処理を終了する
+		MINE_FIELD_STATE currentState = currentField.getState();
+		if (currentState.equals(MINE_FIELD_STATE.OPEN)) {
+			return;
+		}
+
+		// 周囲地雷数を選択されたマスに設定
+		mineFieldPanel.getMineFieldNode(targetItem).getValue().setValue(currentMass.toString());
+
+		// 押下したマスを非活性に変更
+		mineFieldPanel.getMineFieldNode(targetItem).getValue().setDisable(true);
+
+		// 押下したマスの状態マトリックスをオープン状態に変更
+		currentField.setState(MINE_FIELD_STATE.OPEN);
+
+		// 0だったら回りも押下
+		if (currentMass.equals(MINE_FIELD_MASS.ZERO)) {
+			matrix.around(targetItem).forEach(this::openMassAroundZero);
 		}
 	}
 
@@ -214,14 +243,10 @@ public class MineSweeper extends Application {
 		matrix.flat()
 			.filter(item -> !item.getValue().getMass().equals(MINE_FIELD_MASS.MINE))
 			.forEach(item -> item.getValue().setMass(MINE_FIELD_MASS.valueOf(
-														matrix.arround(item)
+														matrix.around(item)
 														.filter(item2 -> item2.getValue().getMass().equals(MINE_FIELD_MASS.MINE))
 														.count()))
 					);
-
-////		テスト表示用
-//		mineFieldMatrix.flat()
-//			.forEach(item -> mineFieldPanel.getMineFieldNode(item).getValue().setValue(item.getValue()));
 	}
 
 	private MINE_FIELD_MASS convertMine(Integer num) {
@@ -259,6 +284,14 @@ public class MineSweeper extends Application {
 			// 既にオープンは何もしない
 			return;
 		} else if (currentState.equals(MINE_FIELD_STATE.CLOSE)){
+
+			// 現在フラグ数がMAXと同じ場合は旗を置かない。
+			long flagCount = matrix.flat()
+					.filter(dimension -> dimension.getValue().getState().equals(MINE_FIELD_STATE.FLAG))
+					.count();
+			if (flagCount == MAX_MINES) {
+				return;
+			}
 			// 空いてない場合は旗を立てる
 			currentField.setState(MINE_FIELD_STATE.FLAG);
 		} else if (currentState.equals(MINE_FIELD_STATE.FLAG)){
@@ -268,9 +301,21 @@ public class MineSweeper extends Application {
 
 		// 変更になったフィールドステータスをパネルへ更新
 		mineFieldPanel.getMineFieldNode(item).getValue().setValue(currentField.getStateString());
+
+		// ツールパネルの旗個数の変更
+		resetRemainMines();
 	}
 
 
+	/**
+	 * ツールパネル旗個数のリセット
+	 */
+	private void resetRemainMines() {
+		// ツールパネルの旗個数の変更
+		toolPanel.setRemainLandMinesText(MAX_MINES - matrix.flat()
+					.filter(dimension -> dimension.getValue().getState().equals(MINE_FIELD_STATE.FLAG))
+					.count());
+	}
 
 	/**
 	 * リセットボタン押下時の処理を行います。
@@ -295,7 +340,7 @@ public class MineSweeper extends Application {
 			});
 
 		// 残地雷数を初期化
-		toolPanel.setRemainLandMinesText(MAX_MINES);
+		resetRemainMines();
 	}
 
 	/**

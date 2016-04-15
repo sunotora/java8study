@@ -50,21 +50,21 @@ public class IntegerMatrixTest {
 		 *     入力が"20"の座標：返却ストリーム{15,16,19}
 		 */
 		//     入力が"7"の座標：返却ストリーム{2,3,4,6,8,10,11,12}
-		List<Integer> list = matrix.arround(MATRIX_WIDTH -2, MATRIX_HEIGHT -2)
+		List<Integer> list = matrix.around(MATRIX_WIDTH -2, MATRIX_HEIGHT -2)
 			.map(elem -> elem.getValue())
 			.collect(Collectors.toList());
 
 		assertThat(list, hasItems(toInt(2), toInt(3), toInt(4), toInt(6), toInt(8), toInt(10), toInt(11), toInt(12)));
 
 		//     入力が"1"の座標：返却ストリーム{2,5,6}
-		List<Integer> list2 = matrix.arround(0, MATRIX_HEIGHT -1)
+		List<Integer> list2 = matrix.around(0, MATRIX_HEIGHT -1)
 				.map(elem -> elem.getValue())
 				.collect(Collectors.toList());
 
 		assertThat(list2, hasItems(toInt(2), toInt(5), toInt(6)));
 
 		//     入力が"20"の座標：返却ストリーム{15,16,19}
-		List<Integer> list3 = matrix.arround(MATRIX_WIDTH -1, 0)
+		List<Integer> list3 = matrix.around(MATRIX_WIDTH -1, 0)
 				.map(elem -> elem.getValue())
 				.collect(Collectors.toList());
 
