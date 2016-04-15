@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import jp.co.satomaru.java8study.minesweeper.core.MineFieldPanel;
 import jp.co.satomaru.java8study.minesweeper.core.MineFieldPanel.MineFieldAdapter;
 import jp.co.satomaru.java8study.minesweeper.core.ToolPanel;
-import jp.co.satomaru.java8study.minesweeper.util.MINE_FIELD;
+import jp.co.satomaru.java8study.minesweeper.util.MINE_FIELD_MASS;
 import jp.co.satomaru.java8study.minesweeper.util.MINE_FIELD_STATE;
 import jp.satomaru.java8study.util.Lottery;
 import jp.satomaru.java8study.util.Matrix;
@@ -67,10 +67,14 @@ public class MineSweeper extends Application {
 	private ToolPanel toolPanel;
 
 	/** 地雷原マトリクス。 */
-	private Matrix<String> mineFieldMatrix = new Matrix<String>(MATRIX_WIDTH, MATRIX_HEIGHT, MINE_FIELD.ZERO.toString());
+	private Matrix<MineField> matrix = new Matrix<>(MATRIX_WIDTH, MATRIX_HEIGHT, (x, y) -> new MineField(MINE_FIELD_MASS.ZERO, MINE_FIELD_STATE.CLOSE));
 
-	/** 地雷原状態マトリクス。 */
-	private Matrix<String> mineFieldStateMatrix = new Matrix<String>(MATRIX_WIDTH, MATRIX_HEIGHT, MINE_FIELD_STATE.CLOSE.toString());
+//
+//	/** 地雷原マトリクス。 */
+//	private Matrix<String> mineFieldMatrix = new Matrix<String>(MATRIX_WIDTH, MATRIX_HEIGHT, MINE_FIELD.ZERO.toString());
+//
+//	/** 地雷原状態マトリクス。 */
+//	private Matrix<String> mineFieldStateMatrix = new Matrix<String>(MATRIX_WIDTH, MATRIX_HEIGHT, MINE_FIELD_STATE.CLOSE.toString());
 
 	/**
 	 * JavaFXアプリケーションを起動します。
@@ -131,56 +135,59 @@ public class MineSweeper extends Application {
 	 *     その際、全てのマスを非活性にします。</li>
 	 * </ol>
 	 *
-	 * @param item クリックされた地雷原マス
+	 * @param targetItem クリックされた地雷原マス
 	 */
-	private void onNumberLeftClick(TwoDimensionalVariable<MineFieldAdapter> item) {
+	private void onNumberLeftClick(TwoDimensionalVariable<MineFieldAdapter> targetItem) {
 
 		if (isNotStarted()) {
 			// 初期処理
-			initMineField(item);
+			initMineField(targetItem);
 		}
 
+		// 選択された地雷原フィールドを取得
+		MineField currentField = matrix.get(targetItem).getValue();
+
 		// 既にオープンになっている、または旗がセットされているマスは何もせずに処理を終了する
-		String currentState = mineFieldStateMatrix.get(item).getValue();
-		if (currentState.equals(MINE_FIELD_STATE.OPEN.toString())
-				|| currentState.equals(MINE_FIELD_STATE.FLAG.toString())) {
+		MINE_FIELD_STATE currentState = currentField.getState();
+		if (currentState.equals(MINE_FIELD_STATE.OPEN)
+				|| currentState.equals(MINE_FIELD_STATE.FLAG)) {
 			return;
 		}
 
-		String currentMass = mineFieldMatrix.get(item).getValue();
+		MINE_FIELD_MASS currentMass = currentField.getMass();
 
 		// 地雷を踏んだら終わり。
-		if (currentMass.equals(MINE_FIELD.MINE.toString())) {
+		if (currentMass.equals(MINE_FIELD_MASS.MINE)) {
 			alert(AlertType.WARNING, "地雷を踏んでしまいました・・・", "GAME OVER!!!");
 
 			// 全マスを非活性に変更
 			mineFieldPanel.setMineFieldDisable(true);
 
-			// 地雷・周囲地雷数を表示
-			mineFieldMatrix.flat()
-				.forEach(elem -> mineFieldPanel.getMineFieldNode(elem).getValue().setValue(elem.getValue()));
+			// 地雷・周囲地雷数をパネルに表示
+			matrix.flat()
+				.forEach(item -> mineFieldPanel.getMineFieldNode(item).getValue().setValue(item.getValue().getMassString()));
 
 			return;
 		}
 
-		// 周囲地雷数を取得
-		String arroundRemaiMines = mineFieldMatrix.get(item).getValue();
-		// マスに設定
-		mineFieldPanel.getMineFieldNode(item).getValue().setValue(arroundRemaiMines);
+		// 周囲地雷数を選択されたマスに設定
+		mineFieldPanel.getMineFieldNode(targetItem).getValue().setValue(currentMass.toString());
 
 		// 0だったら回りも押下。（こなへんどうやってやろうかなぁ）
 		// TODO
+		// 周囲地雷数が0だった場合、周囲８マスをオープンにし、非活性とする。
+		// 何かしらの再帰処理が必要か？
 
 		// 押下したマスを非活性に変更
-		item.getValue().setDisable(true);
+		targetItem.getValue().setDisable(true);
 
 		// 押下したマスの状態マトリックスをオープン状態に変更
-		mineFieldStateMatrix.get(item).setValue(MINE_FIELD_STATE.OPEN.toString());
+		matrix.get(targetItem).getValue().setState(MINE_FIELD_STATE.OPEN);;
 
 		// 終了判定（地雷じゃない全てのマスがオープンだったら終了）
-		if (mineFieldMatrix.flat()
-			.filter(elem -> !elem.getValue().equals(MINE_FIELD.MINE.toString()))
-			.allMatch(elem -> mineFieldStateMatrix.get(elem).getValue().equals(MINE_FIELD_STATE.OPEN.toString()))) {
+		if (matrix.flat()
+			.filter(item -> !item.getValue().getMass().equals(MINE_FIELD_MASS.MINE))
+			.allMatch(item -> matrix.get(item).getValue().getState().equals(MINE_FIELD_STATE.OPEN))) {
 
 			// 全マスを非活性に変更
 			mineFieldPanel.setMineFieldDisable(true);
@@ -199,18 +206,17 @@ public class MineSweeper extends Application {
 		Lottery<Integer> correctInitLottery = Lottery.ofInteger(1, MATRIX_WIDTH * MATRIX_HEIGHT);
 
 		// 地雷原マトリックスに地雷を配置（押下マス以外）
-		mineFieldMatrix.flat()
+		matrix.flat()
 			.filter(item -> targetItem.isNotSamePosition(item))
-			.forEach(item -> item.setValue(convertMine(correctInitLottery.draw().get())));
+			.forEach(item -> item.getValue().setMass(convertMine(correctInitLottery.draw().get())));
 
 		// 周囲地雷数を更新（押下マス含む、地雷除く）
-		mineFieldMatrix.flat()
-			.filter(item -> !item.getValue().equals(MINE_FIELD.MINE.toString()))
-			.forEach(item -> item.setValue(MINE_FIELD.valueOf(
-												mineFieldMatrix
-												.arround(item)
-												.filter(item2 -> item2.getValue().equals(MINE_FIELD.MINE.toString()))
-												.count()))
+		matrix.flat()
+			.filter(item -> !item.getValue().getMass().equals(MINE_FIELD_MASS.MINE))
+			.forEach(item -> item.getValue().setMass(MINE_FIELD_MASS.valueOf(
+														matrix.arround(item)
+														.filter(item2 -> item2.getValue().getMass().equals(MINE_FIELD_MASS.MINE))
+														.count()))
 					);
 
 ////		テスト表示用
@@ -218,8 +224,8 @@ public class MineSweeper extends Application {
 //			.forEach(item -> mineFieldPanel.getMineFieldNode(item).getValue().setValue(item.getValue()));
 	}
 
-	private String convertMine(Integer num) {
-		return num <= MAX_MINES ? MINE_FIELD.MINE.toString() : MINE_FIELD.ZERO.toString();
+	private MINE_FIELD_MASS convertMine(Integer num) {
+		return num <= MAX_MINES ? MINE_FIELD_MASS.MINE : MINE_FIELD_MASS.ZERO;
 	}
 
 	/**
@@ -244,21 +250,27 @@ public class MineSweeper extends Application {
 
 		if (isNotStarted()) return;
 
-		TwoDimensionalVariable<String> currentMass = mineFieldStateMatrix.get(item);
+		// 現在フィールド・状態を取得
+		MineField currentField = matrix.get(item).getValue();
+		MINE_FIELD_STATE currentState = currentField.getState();
 
-		if (currentMass.getValue().equals(MINE_FIELD_STATE.OPEN.toString())) {
+		// 状態に応じて変更
+		if (currentState.equals(MINE_FIELD_STATE.OPEN)) {
 			// 既にオープンは何もしない
 			return;
-		} else if (currentMass.getValue().equals(MINE_FIELD_STATE.CLOSE.toString())){
+		} else if (currentState.equals(MINE_FIELD_STATE.CLOSE)){
 			// 空いてない場合は旗を立てる
-			currentMass.setValue(MINE_FIELD_STATE.FLAG.toString());
-			mineFieldPanel.getMineFieldNode(item).getValue().setValue(MINE_FIELD_STATE.FLAG.toString());
-		} else if (currentMass.getValue().equals(MINE_FIELD_STATE.FLAG.toString())){
+			currentField.setState(MINE_FIELD_STATE.FLAG);
+		} else if (currentState.equals(MINE_FIELD_STATE.FLAG)){
 			// 旗が立っている場合は旗を下げる
-			currentMass.setValue(MINE_FIELD_STATE.CLOSE.toString());
-			mineFieldPanel.getMineFieldNode(item).getValue().setValue(MINE_FIELD_STATE.CLOSE.toString());
+			currentField.setState(MINE_FIELD_STATE.CLOSE);
 		}
+
+		// 変更になったフィールドステータスをパネルへ更新
+		mineFieldPanel.getMineFieldNode(item).getValue().setValue(currentField.getStateString());
 	}
+
+
 
 	/**
 	 * リセットボタン押下時の処理を行います。
@@ -274,23 +286,23 @@ public class MineSweeper extends Application {
 		// 地雷原マトリックスのパネルを全て活性化
 		mineFieldPanel.setMineFieldDisable(false);
 
-		mineFieldMatrix.flat()
+		matrix.flat()
 			.forEach(item -> {
 				// パネルの初期化
 				mineFieldPanel.getMineFieldNode(item).getValue().setValue(MINE_FIELD_STATE.CLOSE.toString());
 				// 状態マトリックスの初期化
-				mineFieldStateMatrix.get(item).setValue(MINE_FIELD_STATE.CLOSE.toString());
+				matrix.get(item).getValue().setState(MINE_FIELD_STATE.CLOSE);
 			});
 
 		// 残地雷数を初期化
 		toolPanel.setRemainLandMinesText(MAX_MINES);
 	}
 
-	private boolean isStarted() {
-		return !isNotStarted();
-	}
-
+	/**
+	 * ゲームがスタートしていないかチェックします。
+	 * @return
+	 */
 	private boolean isNotStarted() {
-		return mineFieldStateMatrix.flat().allMatch(elem -> elem.getValue().equals(MINE_FIELD_STATE.CLOSE.toString()));
+		return matrix.flat().allMatch(item -> item.getValue().getState().equals(MINE_FIELD_STATE.CLOSE));
 	}
 }

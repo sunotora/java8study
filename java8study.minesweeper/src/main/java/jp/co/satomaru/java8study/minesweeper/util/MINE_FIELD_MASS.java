@@ -1,6 +1,6 @@
 package jp.co.satomaru.java8study.minesweeper.util;
 
-public enum MINE_FIELD {
+public enum MINE_FIELD_MASS {
 	MINE("*"),
 	ZERO("0"),
 	ONE("1"),
@@ -15,7 +15,7 @@ public enum MINE_FIELD {
 
 	private String character;
 
-	MINE_FIELD(String character) {
+	MINE_FIELD_MASS(String character) {
 		this.character = character;
 	}
 
@@ -24,28 +24,28 @@ public enum MINE_FIELD {
 		return this.character;
 	}
 
-	public static String valueOf(long count) {
+	public static MINE_FIELD_MASS valueOf(long count) {
 		switch (Long.valueOf(count).intValue()) {
 			case 0:
-				return ZERO.toString();
+				return ZERO;
 			case 1:
-				return ONE.toString();
+				return ONE;
 			case 2:
-				return TWO.toString();
+				return TWO;
 			case 3:
-				return THREE.toString();
+				return THREE;
 			case 4:
-				return FOUR.toString();
+				return FOUR;
 			case 5:
-				return FIVE.toString();
+				return FIVE;
 			case 6:
-				return SIX.toString();
+				return SIX;
 			case 7:
-				return SEVEN.toString();
+				return SEVEN;
 			case 8:
-				return EIGHT.toString();
+				return EIGHT;
 		}
 
-		return "";
+		return ZERO;
 	}
 }
